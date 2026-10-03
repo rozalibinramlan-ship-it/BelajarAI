@@ -15,63 +15,87 @@ app.get('/', (req, res) => {
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// Senarai model fallback (cuba satu-satu)
-const GROQ_MODELS = [
-    'llama-3.3-70b-versatile',
-    'llama-3.1-70b-versatile',
-    'llama-3.1-8b-instant',
-    'mixtral-8x7b-32768',
-    'gemma2-9b-it'
-];
+// ==========================================
+// AUTO-DETECT MODEL YANG TERSEDIA DI GROQ
+// ==========================================
+let cachedModel = null;
+
+async function getAvailableModel() {
+    if (cachedModel) return cachedModel;
+    
+    try {
+        console.log("Mencari model tersedia di Groq...");
+        const res = await axios.get('https://api.groq.com/openai/v1/models', {
+            headers: { 'Authorization': `Bearer ${GROQ_API_KEY}` }
+        });
+        
+        // Senarai model yang tersedia
+        const models = res.data.data.map(m => m.id);
+        console.log("Model tersedia:", models.join(', '));
+        
+        // Pilih model yang sesuai (utamakan yang besar/versatile)
+        const priority = [
+            'llama-3.3-70b-versatile',
+            'llama-3.1-70b-versatile',
+            'llama3-70b-8192',
+            'llama-3.1-8b-instant',
+            'llama3-8b-8192',
+            'mixtral-8x7b-32768',
+            'gemma2-9b-it'
+        ];
+        
+        for (const p of priority) {
+            if (models.includes(p)) {
+                console.log("Model dipilih:", p);
+                cachedModel = p;
+                return p;
+            }
+        }
+        
+        // Kalau tak ada yang match priority, ambil je yang pertama
+        if (models.length > 0) {
+            console.log("Fallback ke model:", models[0]);
+            cachedModel = models[0];
+            return models[0];
+        }
+        
+        throw new Error("Tiada model tersedia di Groq");
+    } catch (error) {
+        console.error("Gagal detect model:", error.message);
+        throw error;
+    }
+}
 
 async function callGroq(prompt, jsonMode = false) {
     if (!GROQ_API_KEY) {
         throw new Error("GROQ_API_KEY tidak dijumpai dalam Environment");
     }
     
-    let lastError = null;
+    const model = await getAvailableModel();
     
-    // Cuba setiap model satu-satu
-    for (const model of GROQ_MODELS) {
-        try {
-            console.log(`Cuba model: ${model}`);
-            
-            const body = {
-                model: model,
-                messages: [
-                    { role: 'system', content: 'You are a helpful, friendly Malaysian tutor. Answer in Bahasa Melayu.' },
-                    { role: 'user', content: prompt }
-                ],
-                temperature: 0.7,
-                max_tokens: 3000
-            };
-            
-            if (jsonMode) {
-                body.response_format = { type: 'json_object' };
-            }
-            
-            const response = await axios.post(GROQ_URL, body, {
-                headers: {
-                    'Authorization': `Bearer ${GROQ_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                timeout: 60000
-            });
-            
-            console.log(`Berjaya guna model: ${model}`);
-            return response.data.choices[0].message.content;
-            
-        } catch (error) {
-            const status = error.response ? error.response.status : 'NO_STATUS';
-            const errMsg = error.response && error.response.data ? JSON.stringify(error.response.data) : error.message;
-            console.error(`Model ${model} gagal (${status}):`, errMsg);
-            lastError = error;
-            // Teruskan cuba model seterusnya
-        }
+    const body = {
+        model: model,
+        messages: [
+            { role: 'system', content: 'You are a helpful, friendly Malaysian tutor. Answer in Bahasa Melayu.' },
+            { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 3000
+    };
+    
+    if (jsonMode) {
+        body.response_format = { type: 'json_object' };
     }
     
-    // Kalau semua model gagal
-    throw new Error(`Semua model gagal. Ralat terakhir: ${lastError.message}`);
+    const response = await axios.post(GROQ_URL, body, {
+        headers: {
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        timeout: 90000
+    });
+    
+    return response.data.choices[0].message.content;
 }
 
 // 1. TANYA AI
@@ -82,9 +106,9 @@ app.post('/api/tanya', async (req, res) => {
         
 Soalan pelajar: "${soalan}"
 
-Beri jawapan yang DETAIL dan mudah faham dalam Bahasa Melayu:
+Beri jawapan DETAIL dalam Bahasa Melayu:
 - Terangkan konsep dengan jelas
-- Beri contoh yang relevan
+- Beri contoh relevan
 - Untuk Matematik/Sains: tunjuk langkah pengiraan
 - Tambah tip peperiksaan di akhir`;
         
@@ -100,16 +124,14 @@ Beri jawapan yang DETAIL dan mudah faham dalam Bahasa Melayu:
 app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
-        console.log("Subjek diminta:", subjek, "| Tahap:", tahap);
+        console.log("Subjek:", subjek, "| Tahap:", tahap);
 
-        const prompt = `You are a Malaysian textbook author writing for students at level: ${tahap}, subject: ${subjek}.
-
-Create ONE comprehensive chapter. Make it RICH and DETAILED.
+        const prompt = `You are a Malaysian textbook author. Create ONE comprehensive chapter for level: ${tahap}, subject: ${subjek}.
 
 Respond in VALID JSON with this structure:
 {
   "tajuk": "Chapter title",
-  "kandungan": "Write 4-5 DETAILED paragraphs explaining the concept thoroughly. Include: (1) Introduction and definition, (2) Key concepts with examples, (3) Real-world applications, (4) Formulas/rules (for Math/Science), (5) Summary. Bahasa Melayu. Minimum 300 words.",
+  "kandungan": "Write 4-5 DETAILED paragraphs explaining the concept thoroughly. Include: (1) Introduction and definition, (2) Key concepts with examples, (3) Real-world applications, (4) Formulas/rules for Math/Science, (5) Summary. Bahasa Melayu. Minimum 300 words.",
   "soalan": "Create ONE exam-style practice question",
   "pilihan": ["Option A", "Option B", "Option C", "Option D"],
   "jawapan_betul": 0,
@@ -159,7 +181,7 @@ app.post('/api/nota-ringkas', async (req, res) => {
         const { topik, subjek, tahap } = req.body;
         const prompt = `Nota ringkas untuk ${tahap}, subjek ${subjek}, topik: ${topik}.
         
-Format dalam Bahasa Melayu:
+Format Bahasa Melayu:
 📌 DEFINISI
 🔑 KONSEP UTAMA (4-5 poin)
 📖 RUJUKAN
