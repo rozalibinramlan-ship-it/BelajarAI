@@ -15,9 +15,6 @@ app.get('/', (req, res) => {
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// ==========================================
-// AUTO-DETECT MODEL YANG TERSEDIA DI GROQ
-// ==========================================
 let cachedModel = null;
 
 async function getAvailableModel() {
@@ -29,37 +26,39 @@ async function getAvailableModel() {
             headers: { 'Authorization': `Bearer ${GROQ_API_KEY}` }
         });
         
-        // Senarai model yang tersedia
         const models = res.data.data.map(m => m.id);
-        console.log("Model tersedia:", models.join(', '));
+        console.log("Semua model:", models.join(', '));
         
-        // Pilih model yang sesuai (utamakan yang besar/versatile)
+        // Priority: model CHAT yang bagus
         const priority = [
-            'llama-3.3-70b-versatile',
-            'llama-3.1-70b-versatile',
-            'llama3-70b-8192',
-            'llama-3.1-8b-instant',
-            'llama3-8b-8192',
-            'mixtral-8x7b-32768',
-            'gemma2-9b-it'
+            'openai/gpt-oss-120b',
+            'openai/gpt-oss-20b',
+            'qwen/qwen3-8-27b',
+            'allam-2-7b'
         ];
         
+        // SKIP model audio/guard
+        const skipModels = ['whisper', 'orpheus', 'prompt-guard', 'safeguard'];
+        const chatModels = models.filter(m => 
+            !skipModels.some(skip => m.toLowerCase().includes(skip))
+        );
+        console.log("Model chat tersedia:", chatModels.join(', '));
+        
         for (const p of priority) {
-            if (models.includes(p)) {
+            if (chatModels.includes(p)) {
                 console.log("Model dipilih:", p);
                 cachedModel = p;
                 return p;
             }
         }
         
-        // Kalau tak ada yang match priority, ambil je yang pertama
-        if (models.length > 0) {
-            console.log("Fallback ke model:", models[0]);
-            cachedModel = models[0];
-            return models[0];
+        if (chatModels.length > 0) {
+            console.log("Fallback ke model:", chatModels[0]);
+            cachedModel = chatModels[0];
+            return chatModels[0];
         }
         
-        throw new Error("Tiada model tersedia di Groq");
+        throw new Error("Tiada model chat tersedia");
     } catch (error) {
         console.error("Gagal detect model:", error.message);
         throw error;
@@ -67,9 +66,7 @@ async function getAvailableModel() {
 }
 
 async function callGroq(prompt, jsonMode = false) {
-    if (!GROQ_API_KEY) {
-        throw new Error("GROQ_API_KEY tidak dijumpai dalam Environment");
-    }
+    if (!GROQ_API_KEY) throw new Error("GROQ_API_KEY tidak dijumpai");
     
     const model = await getAvailableModel();
     
@@ -83,9 +80,7 @@ async function callGroq(prompt, jsonMode = false) {
         max_tokens: 3000
     };
     
-    if (jsonMode) {
-        body.response_format = { type: 'json_object' };
-    }
+    if (jsonMode) body.response_format = { type: 'json_object' };
     
     const response = await axios.post(GROQ_URL, body, {
         headers: {
@@ -98,7 +93,6 @@ async function callGroq(prompt, jsonMode = false) {
     return response.data.choices[0].message.content;
 }
 
-// 1. TANYA AI
 app.post('/api/tanya', async (req, res) => {
     try {
         const { soalan, subjek, tahap } = req.body;
@@ -120,7 +114,6 @@ Beri jawapan DETAIL dalam Bahasa Melayu:
     }
 });
 
-// 2. BUKU TEKS
 app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
@@ -131,15 +124,15 @@ app.post('/api/buku-teks', async (req, res) => {
 Respond in VALID JSON with this structure:
 {
   "tajuk": "Chapter title",
-  "kandungan": "Write 4-5 DETAILED paragraphs explaining the concept thoroughly. Include: (1) Introduction and definition, (2) Key concepts with examples, (3) Real-world applications, (4) Formulas/rules for Math/Science, (5) Summary. Bahasa Melayu. Minimum 300 words.",
+  "kandungan": "Write 4-5 DETAILED paragraphs. Include: (1) Introduction and definition, (2) Key concepts with examples, (3) Real-world applications, (4) Formulas/rules for Math/Science, (5) Summary. Bahasa Melayu. Minimum 300 words.",
   "soalan": "Create ONE exam-style practice question",
   "pilihan": ["Option A", "Option B", "Option C", "Option D"],
   "jawapan_betul": 0,
-  "penjelasan": "Detailed explanation (2-3 sentences) why the answer is correct."
+  "penjelasan": "Detailed explanation (2-3 sentences)."
 }
 
 RULES:
-- Content must be DETAILED (minimum 300 words)
+- Content DETAILED (minimum 300 words)
 - Focus ONLY on subject: ${subjek}
 - Academic Bahasa Melayu
 - jawapan_betul must be index (0, 1, 2, or 3)`;
@@ -147,9 +140,7 @@ RULES:
         const responseText = await callGroq(prompt, true);
         console.log("AI Response length:", responseText.length);
         
-        let text = responseText.trim();
-        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        
+        let text = responseText.trim().replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         const data = JSON.parse(text);
         
         if (!data.tajuk || !data.kandungan || !data.soalan) {
@@ -175,7 +166,6 @@ RULES:
     }
 });
 
-// 3. NOTA RINGKAS
 app.post('/api/nota-ringkas', async (req, res) => {
     try {
         const { topik, subjek, tahap } = req.body;
