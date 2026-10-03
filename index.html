@@ -3,94 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belajar AI - Tahun 1 hingga SPM</title>
+    <title>Belajar AI - Buku Teks Interaktif</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #0a1f1a 0%, #0f2a23 50%, #12362e 100%);
             color: #fff; font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
             min-height: 100vh; padding: 0 0 20px;
         }
-        .header { text-align: center; padding: 25px 15px 15px; }
-        .header h1 { 
-            font-size: 26px; font-weight: 900; letter-spacing: 1px;
-            color: #ffd93d;
-            text-shadow: 0 0 30px rgba(255, 217, 61, 0.4);
-        }
-        .header p { color: #a0aec0; font-size: 13px; margin-top: 6px; }
+        .header { text-align: center; padding: 20px 15px 10px; }
+        .header h1 { font-size: 22px; font-weight: 900; color: #4ade80; text-shadow: 0 0 30px rgba(74, 222, 128, 0.5); }
+        .header p { color: #a0aec0; font-size: 11px; margin-top: 4px; }
+        
+        .tabs { display: flex; gap: 8px; padding: 0 15px; margin-bottom: 15px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: 800; font-size: 12px; background: rgba(255,255,255,0.08); color: #fff; transition: all 0.3s; }
+        .tab-btn.active { background: linear-gradient(135deg, #4ade80, #22c55e); color: #0a1f1a; }
+        
         .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+        .section-label { font-size: 11px; color: #86efac; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin: 15px 0 10px; }
         
-        .section-label { 
-            font-size: 11px; color: #a0aec0; font-weight: 800; 
-            letter-spacing: 2px; text-transform: uppercase; 
-            margin: 15px 0 10px;
-        }
+        .tahap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 15px; }
+        .tahap-btn { padding: 10px 4px; border-radius: 8px; border: 2px solid rgba(74, 222, 128, 0.2); font-size: 10px; font-weight: 800; cursor: pointer; background: rgba(74, 222, 128, 0.05); color: #fff; }
+        .tahap-btn.active { border-color: #4ade80; background: rgba(74, 222, 128, 0.2); }
         
-        .tahap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
-        .tahap-btn {
-            padding: 12px 8px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1);
-            font-size: 12px; font-weight: 800; cursor: pointer;
-            background: rgba(255,255,255,0.05); color: #fff;
-            transition: all 0.2s;
-        }
-        .tahap-btn.active { 
-            border-color: #ffd93d; background: rgba(255, 217, 61, 0.15);
-            box-shadow: 0 0 15px rgba(255, 217, 61, 0.4);
-        }
-        .tahap-btn.rendah { border-left: 3px solid #3b82f6; }
-        .tahap-btn.menengah { border-left: 3px solid #ec4899; }
+        .subjek-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px; max-height: 200px; overflow-y: auto; padding-right: 5px; }
+        .subjek-btn { padding: 10px; border-radius: 8px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: rgba(255, 255, 255, 0.06); color: #fff; text-align: left; }
+        .subjek-btn.active { background: linear-gradient(135deg, #059669, #047857); border: 1px solid #4ade80; }
         
-        .subjek-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .subjek-btn {
-            padding: 14px; border-radius: 12px; border: 2px solid transparent;
-            font-size: 13px; font-weight: 700; cursor: pointer;
-            background: rgba(255, 255, 255, 0.06); color: #fff;
-            transition: all 0.3s; text-align: left;
-        }
-        .subjek-btn.active { 
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border-color: #ffd93d; transform: scale(1.02);
-        }
-        .subjek-btn:hover { background: rgba(255,255,255,0.12); }
+        .content-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(74, 222, 128, 0.15); border-radius: 20px; padding: 20px; margin-bottom: 15px; min-height: 250px; }
         
-        .chat-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px; padding: 18px; margin-bottom: 15px;
-            min-height: 250px; max-height: 450px; overflow-y: auto;
-            backdrop-filter: blur(10px);
-        }
-        .msg { margin-bottom: 12px; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.65; white-space: pre-wrap; }
-        .msg.user { background: linear-gradient(135deg, #3b82f6, #2563eb); margin-left: 40px; text-align: right; }
-        .msg.ai { background: rgba(255, 255, 255, 0.08); border-left: 3px solid #ffd93d; }
-        .msg.loading { color: #ffd93d; font-style: italic; }
+        /* Gaya Buku Teks */
+        .buku-teks h2 { font-size: 18px; color: #4ade80; margin-bottom: 15px; border-bottom: 1px solid rgba(74,222,128,0.3); padding-bottom: 10px; }
+        .buku-teks p { font-size: 14px; line-height: 1.8; color: #cbd5e1; margin-bottom: 15px; text-align: justify; }
+        .latihan-box { margin-top: 25px; padding: 15px; background: rgba(74, 222, 128, 0.08); border-radius: 12px; border-left: 3px solid #fbbf24; }
+        .latihan-box h3 { font-size: 14px; color: #fbbf24; margin-bottom: 10px; }
         
-        .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
-        .input-row input {
-            flex: 1; padding: 16px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 15px; outline: none;
-        }
-        .input-row input:focus { border-color: #ffd93d; }
-        .input-row input::placeholder { color: #718096; }
-        .btn-hantar {
-            padding: 16px 24px; border-radius: 30px; border: none; cursor: pointer;
-            background: linear-gradient(135deg, #ffd93d, #f59e0b);
-            color: #1a1a2e; font-weight: 900; font-size: 15px;
-            box-shadow: 0 4px 20px rgba(255, 217, 61, 0.4);
-        }
-        .btn-rawak {
-            width: 100%; padding: 14px; border-radius: 14px; cursor: pointer;
-            background: rgba(255, 255, 255, 0.08); color: #fff;
-            font-weight: 700; font-size: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .btn-rawak:hover { background: rgba(255, 255, 255, 0.15); }
+        .mcq-option { display: block; width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 2px solid rgba(74, 222, 128, 0.3); background: transparent; color: #fff; font-size: 13px; text-align: left; cursor: pointer; }
+        .mcq-option.correct { background: #22c55e; color: #fff; border-color: #22c55e; }
+        .mcq-option.wrong { background: #ef4444; color: #fff; border-color: #ef4444; }
+        .mcq-option:disabled { cursor: not-allowed; }
+        
+        .chat-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(74, 222, 128, 0.15); border-radius: 20px; padding: 18px; margin-bottom: 15px; min-height: 200px; max-height: 350px; overflow-y: auto; }
+        .msg { margin-bottom: 10px; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.6; }
+        .msg.user { background: #059669; margin-left: 30px; text-align: right; }
+        .msg.ai { background: rgba(255, 255, 255, 0.08); border-left: 3px solid #4ade80; }
+        
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .input-row input { flex: 1; padding: 14px; border-radius: 25px; border: 1px solid rgba(74, 222, 128, 0.2); background: rgba(255, 255, 255, 0.06); color: #fff; outline: none; font-size: 13px; }
+        .btn-hantar { padding: 14px 20px; border-radius: 25px; border: none; background: #4ade80; color: #0a1f1a; font-weight: 900; cursor: pointer; }
+        .btn-action { width: 100%; padding: 14px; border-radius: 12px; border: none; background: rgba(74, 222, 128, 0.15); color: #fff; font-weight: 700; cursor: pointer; margin-bottom: 10px; border: 1px solid rgba(74,222,128,0.3); }
+        
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🎓 Belajar AI</h1>
-        <p>Tahun 1 hingga SPM • Ikut Silibus Malaysia</p>
+        <p>Buku Teks & Latihan Interaktif</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tabBuku" onclick="switchTab('buku')">📖 Buku Teks</button>
+        <button class="tab-btn" id="tabChat" onclick="switchTab('chat')">💬 Tanya AI</button>
     </div>
 
     <div class="container">
@@ -100,92 +75,134 @@
         <p class="section-label">📚 Pilih Subjek</p>
         <div class="subjek-grid" id="subjekGrid"></div>
 
-        <div class="chat-box" id="chatBox">
-            <div class="msg ai">👋 Hai! Saya kawan belajar kamu. Pilih tahap dan subjek, lepas tu tanya apa-apa soalan! 😊</div>
+        <!-- TAB BUKU TEKS -->
+        <div id="viewBuku" class="content-box">
+            <div style="text-align: center; color: #64748b; padding: 40px 0;">
+                <p>Sila pilih subjek di atas, kemudian tekan butang di bawah untuk buka buku teks.</p>
+                <button class="btn-action" onclick="bukaBukuTeks()" style="margin-top: 20px;">📖 BUKA BUKU TEKS</button>
+            </div>
         </div>
 
-        <div class="input-row">
-            <input type="text" id="soalan" placeholder="Taip soalan kamu..." onkeypress="if(event.key==='Enter') tanya()">
-            <button class="btn-hantar" onclick="tanya()">Tanya</button>
+        <!-- TAB CHAT -->
+        <div id="viewChat" class="hidden">
+            <div class="chat-box" id="chatBox">
+                <div class="msg ai">👋 Hai! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
+            </div>
+            <div class="input-row">
+                <input type="text" id="soalan" placeholder="Taip soalan..." onkeypress="if(event.key==='Enter') tanya()">
+                <button class="btn-hantar" onclick="tanya()">Tanya</button>
+            </div>
         </div>
-
-        <button class="btn-rawak" onclick="soalanRawak()">🎲 Bagi Saya Soalan Latihan</button>
     </div>
 
     <script>
-        // Senarai tahap
-        const tahapList = [
-            { id: 'Tahun 1', jenis: 'rendah' }, { id: 'Tahun 2', jenis: 'rendah' },
-            { id: 'Tahun 3', jenis: 'rendah' }, { id: 'Tahun 4', jenis: 'rendah' },
-            { id: 'Tahun 5', jenis: 'rendah' }, { id: 'Tahun 6', jenis: 'rendah' },
-            { id: 'Tingkatan 1', jenis: 'menengah' }, { id: 'Tingkatan 2', jenis: 'menengah' },
-            { id: 'Tingkatan 3', jenis: 'menengah' }, { id: 'Tingkatan 4', jenis: 'menengah' },
-            { id: 'Tingkatan 5', jenis: 'menengah' }
-        ];
+        // Data subjek (ringkaskan untuk contoh, boleh tambah ikut keperluan)
+        const dataSemester = {
+            'Tahun 5': ['Matematik', 'Sains', 'Bahasa Melayu', 'English', 'Sejarah'],
+            'Tingkatan 3': ['Matematik', 'Sains', 'Bahasa Melayu', 'English', 'Sejarah', 'Geografi'],
+            'Part 3': ['CTU263: Islam and Management', 'ISH202: Halal Business and Marketing', 'ISH203: Purification in Islam', 'ISC151: Introduction to Usul Fiqh']
+        };
 
-        // Subjek ikut tahap
-        const subjekRendah = ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral', 'Sejarah', 'Bahasa Arab'];
-        const subjekMenengah = ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam', 'Pendidikan Moral', 'Fizik', 'Kimia', 'Biologi', 'Matematik Tambahan', 'Prinsip Akaun', 'Ekonomi', 'Sains Komputer'];
+        let tahapAktif = 'Part 3';
+        let subjekAktif = 'ISH202: Halal Business and Marketing';
+        let mcqData = null;
 
-        let tahapAktif = 'Tahun 1';
-        let subjekAktif = 'Bahasa Melayu';
-
-        // Render butang tahap
         function renderTahap() {
             const grid = document.getElementById('tahapGrid');
             grid.innerHTML = '';
-            tahapList.forEach(t => {
+            Object.keys(dataSemester).forEach(s => {
                 const btn = document.createElement('button');
-                btn.className = 'tahap-btn ' + t.jenis + (t.id === tahapAktif ? ' active' : '');
-                btn.innerText = t.id;
-                btn.onclick = () => {
-                    tahapAktif = t.id;
-                    subjekAktif = ''; // reset subjek
-                    renderTahap();
-                    renderSubjek();
-                };
+                btn.className = 'tahap-btn' + (s === tahapAktif ? ' active' : '');
+                btn.innerText = s;
+                btn.onclick = () => { tahapAktif = s; subjekAktif = dataSemester[s][0]; renderTahap(); renderSubjek(); };
                 grid.appendChild(btn);
             });
         }
 
-        // Render butang subjek
         function renderSubjek() {
             const grid = document.getElementById('subjekGrid');
             grid.innerHTML = '';
-            const list = tahapAktif.includes('Tahun') ? subjekRendah : subjekMenengah;
-            if (!subjekAktif) subjekAktif = list[0];
-            
-            list.forEach(s => {
+            dataSemester[tahapAktif].forEach(s => {
                 const btn = document.createElement('button');
                 btn.className = 'subjek-btn' + (s === subjekAktif ? ' active' : '');
                 btn.innerText = s;
-                btn.onclick = () => {
-                    subjekAktif = s;
-                    renderSubjek();
-                    tambahMesej('ai', '✅ Subjek: ' + s + ' • Tahap: ' + tahapAktif + '. Jom tanya!');
-                };
+                btn.onclick = () => { subjekAktif = s; renderSubjek(); };
                 grid.appendChild(btn);
             });
         }
 
-        function tambahMesej(jenis, teks) {
-            const box = document.getElementById('chatBox');
-            const div = document.createElement('div');
-            div.className = 'msg ' + jenis;
-            div.innerText = teks;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-            return div;
+        function switchTab(tab) {
+            document.getElementById('tabBuku').classList.toggle('active', tab === 'buku');
+            document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
+            document.getElementById('viewBuku').classList.toggle('hidden', tab !== 'buku');
+            document.getElementById('viewChat').classList.toggle('hidden', tab !== 'chat');
+        }
+
+        async function bukaBukuTeks() {
+            const box = document.getElementById('viewBuku');
+            box.innerHTML = '<div style="text-align:center; padding: 40px; color: #4ade80;">⏳ Sedang menyediakan buku teks...</div>';
+            
+            try {
+                const res = await fetch('/api/buku-teks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subjek: subjekAktif, tahap: tahapAktif })
+                });
+                const result = await res.json();
+                
+                if (result.status === 'success') {
+                    const d = result.data;
+                    mcqData = d.latihan;
+                    
+                    box.innerHTML = `
+                        <div class="buku-teks">
+                            <h2>${d.tajuk}</h2>
+                            <p>${d.kandungan.replace(/\n/g, '<br><br>')}</p>
+                            
+                            <div class="latihan-box">
+                                <h3>✍️ LATIHAN</h3>
+                                <p style="font-size: 14px; margin-bottom: 12px;">${d.latihan.soalan}</p>
+                                <div id="mcqContainer">
+                                    ${d.latihan.pilihan.map((p, i) => `
+                                        <button class="mcq-option" onclick="jawabLatihan(${i}, this)">${p}</button>
+                                    `).join('')}
+                                </div>
+                                <div id="feedback" style="margin-top: 10px; font-size: 13px; font-weight: bold;"></div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    box.innerHTML = '<div style="color: #ef4444; text-align: center;">Gagal memuatkan buku teks.</div>';
+                }
+            } catch (e) {
+                box.innerHTML = '<div style="color: #ef4444; text-align: center;">Ralat sambungan.</div>';
+            }
+        }
+
+        function jawabLatihan(index, btn) {
+            const semuaBtn = document.querySelectorAll('.mcq-option');
+            semuaBtn.forEach(b => b.disabled = true);
+            
+            if (index === mcqData.jawapan_betul) {
+                btn.classList.add('correct');
+                document.getElementById('feedback').innerHTML = '<span style="color:#22c55e;">✅ Betul! ' + mcqData.penjelasan + '</span>';
+            } else {
+                btn.classList.add('wrong');
+                semuaBtn[mcqData.jawapan_betul].classList.add('correct');
+                document.getElementById('feedback').innerHTML = '<span style="color:#ef4444;">❌ Salah. ' + mcqData.penjelasan + '</span>';
+            }
         }
 
         async function tanya() {
             const input = document.getElementById('soalan');
             const soalan = input.value.trim();
             if (!soalan) return;
-
-            tambahMesej('user', soalan);
+            const box = document.getElementById('chatBox');
+            
+            box.innerHTML += `<div class="msg user">${soalan}</div>`;
             input.value = '';
-            const loading = tambahMesej('ai loading', '⏳ AI sedang berfikir...');
+            box.innerHTML += `<div class="msg ai" id="loading">⏳ AI sedang berfikir...</div>`;
+            box.scrollTop = box.scrollHeight;
 
             try {
                 const res = await fetch('/api/tanya', {
@@ -194,33 +211,16 @@
                     body: JSON.stringify({ soalan, subjek: subjekAktif, tahap: tahapAktif })
                 });
                 const data = await res.json();
-                loading.remove();
-                if (data.status === 'success') tambahMesej('ai', data.jawapan);
-                else tambahMesej('ai', '❌ ' + (data.message || 'Cuba lagi.'));
+                document.getElementById('loading').remove();
+                if (data.status === 'success') box.innerHTML += `<div class="msg ai">${data.jawapan}</div>`;
+                else box.innerHTML += `<div class="msg ai">❌ Maaf, cuba lagi.</div>`;
             } catch (e) {
-                loading.remove();
-                tambahMesej('ai', '❌ Ralat sambungan.');
+                document.getElementById('loading').remove();
+                box.innerHTML += `<div class="msg ai">❌ Ralat sambungan.</div>`;
             }
+            box.scrollTop = box.scrollHeight;
         }
 
-        async function soalanRawak() {
-            const loading = tambahMesej('ai loading', '⏳ Sedang jana soalan...');
-            try {
-                const res = await fetch('/api/soalan-rawak', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ subjek: subjekAktif, tahap: tahapAktif })
-                });
-                const data = await res.json();
-                loading.remove();
-                if (data.status === 'success') {
-                    tambahMesej('ai', '📝 Cuba jawab soalan ini (' + subjekAktif + ' ' + tahapAktif + '):\n\n' + data.soalan);
-                    document.getElementById('soalan').placeholder = 'Taip jawapan kamu...';
-                }
-            } catch (e) { loading.remove(); tambahMesej('ai', '❌ Gagal jana soalan.'); }
-        }
-
-        // Init
         renderTahap();
         renderSubjek();
     </script>

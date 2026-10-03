@@ -14,55 +14,66 @@ app.get('/', (req, res) => {
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// 1. TANYA AI (CHAT)
 app.post('/api/tanya', async (req, res) => {
     try {
         const { soalan, subjek, tahap } = req.body;
+        const prompt = `You are a friendly tutor for ${tahap}, subject: ${subjek}. 
+        Question: "${soalan}". 
+        Answer in Bahasa Melayu. Keep it simple. For math, show steps.`;
         
-        const prompt = `You are a friendly Malaysian tutor for students at level: ${tahap}, subject: ${subjek}.
-
-        Student's Question: "${soalan}"
-
-        CRITICAL RULES:
-        1. Adjust difficulty according to level "${tahap}". 
-           - Year 1-3: Very simple words, use pictures/candy/toys examples, very short.
-           - Year 4-6: Simple explanations with examples.
-           - Form 1-3: More detail, introduce concepts.
-           - Form 4-5 (SPM): Exam-focused, include formulas and exam tips.
-        2. Answer in Bahasa Melayu (mix with English terms if needed for Science/Math).
-        3. For Math/Science: show step-by-step solution clearly.
-        4. For History/Geography: give facts with context.
-        5. For languages: correct grammar gently.
-        6. Use emoji to make it fun for younger kids.
-        7. End with an encouraging phrase.
-        8. Follow Malaysian KSSR/KSSM syllabus.`;
-
-        const response = await ai.models.generateContent({ 
-            model: 'gemini-3.8-flash', 
-            contents: prompt 
-        });
-        
+        const response = await ai.models.generateContent({ model: 'gemini-3.8-flash', contents: prompt });
         res.json({ status: "success", jawapan: response.text });
     } catch (error) {
-        console.error("Error:", error.message);
-        res.status(500).json({ status: "error", message: "Maaf, AI sibuk. Cuba lagi." });
+        res.status(500).json({ status: "error", message: "Maaf, AI sibuk." });
     }
 });
 
-app.post('/api/soalan-rawak', async (req, res) => {
+// 2. JANA BUKU TEKS (BAB + LATIHAN)
+app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
-        const prompt = `Generate ONE practice question for a Malaysian student at level: ${tahap}, subject: ${subjek}. 
-        Follow the Malaysian KSSR/KSSM syllabus for that level.
-        Reply ONLY with the question in Bahasa Melayu. No answer. No extra text.`;
+        const prompt = `You are a Malaysian textbook author. Create ONE comprehensive chapter for level: ${tahap}, subject: ${subjek}.
         
-        const response = await ai.models.generateContent({ 
-            model: 'gemini-3.8-flash', 
-            contents: prompt 
-        });
+        Reply ONLY in this exact JSON format (no other text, no markdown):
+        {
+          "tajuk": "Bab 1: Tajuk Bab",
+          "kandungan": "Detailed textbook content here. Use paragraphs. Explain concepts clearly. Include examples.",
+          "latihan": {
+            "soalan": "Question testing the chapter?",
+            "pilihan": ["Option A", "Option B", "Option C", "Option D"],
+            "jawapan_betul": 0,
+            "penjelasan": "Why this answer is correct"
+          }
+        }
         
-        res.json({ status: "success", soalan: response.text.trim() });
+        Rules:
+        - Content must be educational and easy to read.
+        - Bahasa Melayu (mix English for specific terms).
+        - Return ONLY JSON.`;
+        
+        const response = await ai.models.generateContent({ model: 'gemini-3.8-flash', contents: prompt });
+        
+        let text = response.text.trim();
+        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        
+        const data = JSON.parse(text);
+        res.json({ status: "success", data });
     } catch (error) {
-        res.status(500).json({ status: "error", message: "Gagal jana soalan." });
+        console.error("Buku Teks Error:", error.message);
+        res.status(500).json({ status: "error", message: "Gagal jana bab." });
+    }
+});
+
+// 3. NOTA RINGKAS
+app.post('/api/nota-ringkas', async (req, res) => {
+    try {
+        const { topik, subjek, tahap } = req.body;
+        const prompt = `Create concise study notes for ${tahap}, ${subjek}, topic: ${topik}. Format: 📌 DEFINISI, 🔑 KONSEP UTAMA, 📖 RUJUKAN, 💡 TIP PEPERIKSAAN. Bahasa Melayu.`;
+        const response = await ai.models.generateContent({ model: 'gemini-3.8-flash', contents: prompt });
+        res.json({ status: "success", nota: response.text });
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "Gagal jana nota." });
     }
 });
 
