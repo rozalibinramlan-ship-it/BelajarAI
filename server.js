@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// 1. TANYA AI
 app.post('/api/tanya', async (req, res) => {
     try {
         const { soalan, subjek, tahap } = req.body;
@@ -29,32 +30,27 @@ app.post('/api/tanya', async (req, res) => {
     }
 });
 
+// 2. JANA BUKU TEKS (FORMAT TEKS - LEBIH STABIL)
 app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
-        const prompt = `You are a Malaysian textbook author. Create ONE chapter for level: ${tahap}, subject: ${subjek}.
+        console.log("Requesting textbook for:", subjek, "| Level:", tahap);
         
-        Reply EXACTLY in this format with these exact markers (jangan tambah apa-apa lain):
+        const prompt = `You are a Malaysian textbook author. 
+        STRICTLY create ONE short chapter for level: ${tahap}, subject: ${subjek}.
+        DO NOT talk about any other subject. ONLY talk about ${subjek}.
         
-        ===TAJUK===
-        (Tulis tajuk bab di sini)
-        ===KANDUNGAN===
-        (Tulis kandungan buku teks di sini. 3-4 perenggan. Bahasa Melayu. Untuk Matematik, tunjuk contoh kiraan.)
-        ===SOALAN===
-        (Tulis satu soalan latihan di sini)
-        ===PILIHAN_A===
-        (Pilihan A)
-        ===PILIHAN_B===
-        (Pilihan B)
-        ===PILIHAN_C===
-        (Pilihan C)
-        ===PILIHAN_D===
-        (Pilihan D)
-        ===JAWAPAN===
-        (Tulis A, B, C, atau D sahaja)
-        ===PENJELASAN===
-        (Terangkan kenapa jawapan itu betul. 1-2 ayat.)
-        ===TAMAT===`;
+        Reply EXACTLY in this format. Do not add any other text, no markdown, no asterisks.
+        
+        TAJUK: [Write the chapter title here]
+        KANDUNGAN: [Write 3-4 paragraphs of textbook content here. Bahasa Melayu. For Math, show calculation examples.]
+        SOALAN: [Write one practice question here]
+        PILIHAN_A: [Option A]
+        PILIHAN_B: [Option B]
+        PILIHAN_C: [Option C]
+        PILIHAN_D: [Option D]
+        JAWAPAN: [Write only A, B, C, or D]
+        PENJELASAN: [Explain why the answer is correct. 1-2 sentences.]`;
         
         const response = await ai.models.generateContent({ 
             model: 'gemini-3.8-flash', 
@@ -63,28 +59,27 @@ app.post('/api/buku-teks', async (req, res) => {
         
         const text = response.text;
         
-        const getSection = (start, end) => {
-            const startIdx = text.indexOf(start);
-            const endIdx = text.indexOf(end);
-            if (startIdx === -1 || endIdx === -1) return '';
-            return text.substring(startIdx + start.length, endIdx).trim();
+        const getValue = (key) => {
+            const regex = new RegExp(`${key}:\\s*([\\s\\S]*?)(?=\\n[A-Z_]+:|$)`, 'i');
+            const match = text.match(regex);
+            return match ? match[1].trim() : '';
         };
         
-        const tajuk = getSection('===TAJUK===', '===KANDUNGAN===');
-        const kandungan = getSection('===KANDUNGAN===', '===SOALAN===');
-        const soalan = getSection('===SOALAN===', '===PILIHAN_A===');
-        const pilihanA = getSection('===PILIHAN_A===', '===PILIHAN_B===');
-        const pilihanB = getSection('===PILIHAN_B===', '===PILIHAN_C===');
-        const pilihanC = getSection('===PILIHAN_C===', '===PILIHAN_D===');
-        const pilihanD = getSection('===PILIHAN_D===', '===JAWAPAN===');
-        const jawapanHuruf = getSection('===JAWAPAN===', '===PENJELASAN===').toUpperCase();
-        const penjelasan = getSection('===PENJELASAN===', '===TAMAT===');
+        const tajuk = getValue('TAJUK');
+        const kandungan = getValue('KANDUNGAN');
+        const soalan = getValue('SOALAN');
+        const pilihanA = getValue('PILIHAN_A');
+        const pilihanB = getValue('PILIHAN_B');
+        const pilihanC = getValue('PILIHAN_C');
+        const pilihanD = getValue('PILIHAN_D');
+        const jawapanHuruf = getValue('JAWAPAN').toUpperCase();
+        const penjelasan = getValue('PENJELASAN');
         
         const jawapanIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 }[jawapanHuruf.charAt(0)] || 0;
         
         if (!tajuk || !kandungan || !soalan) {
-            console.error("Parse Error - Missing content");
-            return res.status(500).json({ status: "error", message: "Gagal jana bab. Cuba lagi." });
+            console.error("Parse failed for subject:", subjek);
+            return res.status(500).json({ status: "error", message: "Format dari AI tidak lengkap. Sila cuba lagi." });
         }
         
         res.json({ 
@@ -106,6 +101,7 @@ app.post('/api/buku-teks', async (req, res) => {
     }
 });
 
+// 3. NOTA RINGKAS
 app.post('/api/nota-ringkas', async (req, res) => {
     try {
         const { topik, subjek, tahap } = req.body;
