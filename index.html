@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belajar AI - Premium</title>
+    <title>Belajar AI - Diploma Halal</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -38,7 +38,7 @@
             pointer-events: none;
         }
         .header h1 { 
-            font-size: 26px; font-weight: 900; 
+            font-size: 24px; font-weight: 900; 
             background: linear-gradient(90deg, #60a5fa, #fbbf24, #60a5fa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -64,7 +64,7 @@
         .tab-btn.active { 
             background: linear-gradient(135deg, #3b82f6, #1e40af);
             color: #fff; border-color: var(--accent-light);
-            box-shadow: 0 0 25px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 0 25px rgba(59,130,246,0.5);
         }
         .container { padding: 15px; max-width: 800px; margin: 0 auto; }
         .section-label { 
@@ -81,9 +81,9 @@
             gap: 6px; margin-bottom: 15px;
         }
         .tahap-btn { 
-            padding: 10px 4px; border-radius: 8px; 
+            padding: 12px 4px; border-radius: 10px; 
             border: 1px solid var(--border-blue); 
-            font-size: 9px; font-weight: 800; cursor: pointer; 
+            font-size: 11px; font-weight: 800; cursor: pointer; 
             background: linear-gradient(135deg, rgba(15,36,71,0.5), rgba(10,24,50,0.5));
             color: var(--text-gray); transition: all 0.2s;
         }
@@ -94,17 +94,13 @@
             color: #fff; box-shadow: 0 0 15px rgba(59,130,246,0.5);
         }
         .subjek-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; 
+            display: grid; grid-template-columns: 1fr; 
             gap: 6px; margin-bottom: 15px; 
-            max-height: 200px; overflow-y: auto; padding-right: 5px;
         }
-        .subjek-grid::-webkit-scrollbar { width: 5px; }
-        .subjek-grid::-webkit-scrollbar-track { background: transparent; }
-        .subjek-grid::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
         .subjek-btn { 
-            padding: 11px 12px; border-radius: 8px; 
+            padding: 14px 16px; border-radius: 10px; 
             border: 1px solid var(--border-blue); 
-            font-size: 11px; font-weight: 700; cursor: pointer; 
+            font-size: 12px; font-weight: 700; cursor: pointer; 
             background: linear-gradient(135deg, rgba(15,36,71,0.6), rgba(10,24,50,0.6));
             color: var(--text-gray); text-align: left; transition: all 0.2s;
         }
@@ -115,19 +111,17 @@
             box-shadow: 0 0 15px rgba(59,130,246,0.4);
         }
         .subjek-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
         .content-box { 
             background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9));
             border: 1px solid var(--border-blue);
             border-radius: 18px; padding: 22px; margin-bottom: 15px; 
             min-height: 250px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
         }
         .buku-teks h2 { 
             font-size: 18px; color: var(--accent-gold); 
             margin-bottom: 15px; padding-bottom: 12px; 
             border-bottom: 1px solid var(--border-blue);
-            letter-spacing: 0.5px;
         }
         .buku-teks p { 
             font-size: 14px; line-height: 1.9; 
@@ -153,12 +147,10 @@
         .mcq-option:hover { 
             border-color: var(--accent-blue); 
             background: rgba(59,130,246,0.15);
-            transform: translateX(3px);
         }
         .mcq-option.correct { 
             background: linear-gradient(135deg, #059669, #10b981);
             color: #fff; border-color: var(--text-green);
-            box-shadow: 0 0 20px rgba(16,185,129,0.4);
         }
         .mcq-option.wrong { 
             background: linear-gradient(135deg, #991b1b, #ef4444);
@@ -169,16 +161,12 @@
             background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9));
             border: 1px solid var(--border-blue);
             border-radius: 18px; padding: 18px; margin-bottom: 15px; 
-            min-height: 200px; max-height: 350px; overflow-y: auto;
+            min-height: 200px; max-height: 400px; overflow-y: auto;
         }
-        .chat-box::-webkit-scrollbar { width: 5px; }
-        .chat-box::-webkit-scrollbar-track { background: transparent; }
-        .chat-box::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
         .msg { margin-bottom: 10px; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7; }
         .msg.user { 
             background: linear-gradient(135deg, #1e40af, #3b82f6);
             margin-left: 30px; text-align: right;
-            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
         }
         .msg.ai { 
             background: rgba(15,36,71,0.6); 
@@ -190,24 +178,17 @@
             flex: 1; padding: 15px 20px; border-radius: 25px; 
             border: 1px solid var(--border-blue); 
             background: rgba(15,36,71,0.6); color: #fff; 
-            outline: none; font-size: 13px; transition: all 0.2s;
+            outline: none; font-size: 13px;
         }
-        .input-row input:focus { 
-            border-color: var(--accent-light);
-            box-shadow: 0 0 20px rgba(59,130,246,0.3);
-        }
+        .input-row input:focus { border-color: var(--accent-light); }
         .input-row input::placeholder { color: #64748b; }
         .btn-hantar { 
             padding: 15px 26px; border-radius: 25px; border: none; 
             background: linear-gradient(135deg, #3b82f6, #1e40af);
             color: #fff; font-weight: 900; cursor: pointer;
-            box-shadow: 0 4px 20px rgba(59,130,246,0.5);
-            letter-spacing: 1px; transition: all 0.2s;
+            letter-spacing: 1px;
         }
-        .btn-hantar:hover { transform: translateY(-1px); }
         .hidden { display: none; }
-        
-        /* Loading Spinner */
         .loading-box { text-align: center; padding: 60px 20px; }
         .spinner {
             width: 50px; height: 50px;
@@ -225,7 +206,7 @@
 <body>
     <div class="header">
         <h1>BELAJAR AI</h1>
-        <p>Premium Learning System</p>
+        <p>Diploma Pengurusan Halal</p>
     </div>
 
     <div class="tabs">
@@ -234,24 +215,22 @@
     </div>
 
     <div class="container">
-        <p class="section-label">📅 Pilih Tahap</p>
+        <p class="section-label">📅 Pilih Semester</p>
         <div class="tahap-grid" id="tahapGrid"></div>
 
         <p class="section-label">📚 Pilih Subjek</p>
         <div class="subjek-grid" id="subjekGrid"></div>
 
-        <!-- BUKU TEKS VIEW -->
         <div id="viewBuku" class="content-box">
             <div class="loading-box">
                 <div class="spinner"></div>
-                <p class="loading-text">Pilih subjek untuk membuka buku teks...</p>
+                <p class="loading-text">Sila pilih subjek untuk membuka buku teks...</p>
             </div>
         </div>
 
-        <!-- CHAT VIEW -->
         <div id="viewChat" class="hidden">
             <div class="chat-box" id="chatBox">
-                <div class="msg ai">👋 Hai! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
+                <div class="msg ai">👋 Assalamualaikum! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
             </div>
             <div class="input-row">
                 <input type="text" id="soalan" placeholder="Taip soalan..." onkeypress="if(event.key==='Enter') tanya()">
@@ -261,26 +240,16 @@
     </div>
 
     <script>
+        // FOKUS: Diploma Pengurusan Halal (UiTM IC120) SAHAJA
         const dataSemester = {
-            'Tahun 1': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral'],
-            'Tahun 2': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral'],
-            'Tahun 3': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral'],
-            'Tahun 4': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Pendidikan Islam'],
-            'Tahun 5': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Pendidikan Islam'],
-            'Tahun 6': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Pendidikan Islam'],
-            'Tingkatan 1': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam'],
-            'Tingkatan 2': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam'],
-            'Tingkatan 3': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam'],
-            'Tingkatan 4': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Fizik', 'Kimia', 'Biologi', 'Prinsip Akaun', 'Ekonomi'],
-            'Tingkatan 5': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Fizik', 'Kimia', 'Biologi', 'Prinsip Akaun', 'Ekonomi'],
-            'Part 1': ['CTU101: Fundamentals of Islam', 'ISC100: Aqidah Islamiyah', 'ISC102: Ulum Al-Quran', 'ISH101: Introduction to Halal Consumerism', 'LCC111: English I', 'MAT112: Business Mathematics'],
-            'Part 2': ['CSC134: Computer and Info Processing', 'CTU152: Values and Civilization', 'ISC101: Akhlaq Islamiyah', 'ISC152: Ulum Al-Hadith', 'ISC200: Tarikh Tasyri\'', 'ISH150: Principle of Food Science'],
-            'Part 3': ['CTU263: Islam and Management', 'IMU202: Islamic Economics', 'ISC151: Usul Fiqh', 'ISH202: Halal Business and Marketing', 'ISH203: Purification in Islam', 'LCC113: English III'],
-            'Part 4': ['ENT300: Entrepreneurship', 'IMU102: Fiqh Muamalat', 'ISC201: Qawaid Fiqhiyah', 'ISH250: Fiqh Mu\'asarah', 'ISH252: Halal Standard and Certification', 'ISH253: Halal Logistics Management'],
-            'Part 5': ['ISC251: Dirasah An-Nassiyah', 'ISH301: Halal Slaughtering', 'ISH304: Halal Regulatory and Governance', 'ISH305: Halal Quality and Assurance', 'ISH306: Industrial Training']
+            'Sem 1': ['CTU101: Fundamentals of Islam', 'ISC100: Aqidah Islamiyah', 'ISC102: Ulum Al-Quran', 'ISH101: Introduction to Halal Consumerism', 'LCC111: English I', 'MAT112: Business Mathematics'],
+            'Sem 2': ['CSC134: Computer and Info Processing', 'CTU152: Values and Civilization', 'ISC101: Akhlaq Islamiyah', 'ISC152: Ulum Al-Hadith', 'ISC200: Tarikh Tasyri\'', 'ISH150: Principle of Food Science'],
+            'Sem 3': ['CTU263: Islam and Management', 'IMU202: Islamic Economics', 'ISC151: Usul Fiqh', 'ISH202: Halal Business and Marketing', 'ISH203: Purification in Islam', 'LCC113: English III'],
+            'Sem 4': ['ENT300: Entrepreneurship', 'IMU102: Fiqh Muamalat', 'ISC201: Qawaid Fiqhiyah', 'ISH250: Fiqh Mu\'asarah', 'ISH252: Halal Standard and Certification', 'ISH253: Halal Logistics Management'],
+            'Sem 5': ['ISC251: Dirasah An-Nassiyah', 'ISH301: Halal Slaughtering', 'ISH304: Halal Regulatory and Governance', 'ISH305: Halal Quality and Assurance', 'ISH306: Industrial Training']
         };
 
-        let tahapAktif = 'Part 3';
+        let tahapAktif = 'Sem 3';
         let subjekAktif = 'ISH202: Halal Business and Marketing';
         let mcqData = null;
         let tabAktif = 'buku';
@@ -328,10 +297,7 @@
             document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
             document.getElementById('viewBuku').classList.toggle('hidden', tab !== 'buku');
             document.getElementById('viewChat').classList.toggle('hidden', tab !== 'chat');
-            
-            if (tab === 'buku' && subjekAktif) {
-                bukaBukuTeks();
-            }
+            if (tab === 'buku' && subjekAktif) bukaBukuTeks();
         }
 
         async function bukaBukuTeks() {
@@ -346,7 +312,6 @@
                 </div>
             `;
             
-            // Disable subject buttons
             document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = true);
             document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = true);
 
@@ -393,7 +358,6 @@
         function jawabLatihan(index, btn) {
             const semuaBtn = document.querySelectorAll('.mcq-option');
             semuaBtn.forEach(b => b.disabled = true);
-            
             if (index === mcqData.jawapan_betul) {
                 btn.classList.add('correct');
                 document.getElementById('feedback').innerHTML = '<span style="color:#10b981;">✅ Betul! ' + mcqData.penjelasan + '</span>';
@@ -409,7 +373,6 @@
             const soalan = input.value.trim();
             if (!soalan) return;
             const box = document.getElementById('chatBox');
-            
             box.innerHTML += `<div class="msg user">${soalan}</div>`;
             input.value = '';
             box.innerHTML += `<div class="msg ai" id="loading">⏳ AI sedang berfikir...</div>`;
