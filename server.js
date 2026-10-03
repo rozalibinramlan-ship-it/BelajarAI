@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { GoogleGenAI } = require('@google/genai'); 
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -12,38 +12,61 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
-// ==========================================
-// 1. TANYA AI (JAWAPAN DETAIL)
-// ==========================================
+// Helper function untuk call Groq
+async function callGroq(prompt, jsonMode = false) {
+    const body = {
+        model: GROQ_MODEL,
+        messages: [
+            { role: 'system', content: 'You are a helpful, friendly Malaysian tutor. Answer in Bahasa Melayu.' },
+            { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 3000
+    };
+    
+    if (jsonMode) {
+        body.response_format = { type: 'json_object' };
+    }
+    
+    const response = await axios.post(GROQ_URL, body, {
+        headers: {
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        timeout: 60000
+    });
+    
+    return response.data.choices[0].message.content;
+}
+
+// 1. TANYA AI
 app.post('/api/tanya', async (req, res) => {
     try {
         const { soalan, subjek, tahap } = req.body;
-        const prompt = `You are a friendly Malaysian tutor for ${tahap}, subject: ${subjek}. 
-        Question: "${soalan}". 
+        const prompt = `Tutor untuk ${tahap}, subjek: ${subjek}.
         
-        Give a DETAILED answer in Bahasa Melayu:
-        - Explain the concept clearly.
-        - Give examples where relevant.
-        - For Math/Science: show step-by-step calculations.
-        - Include exam tips at the end.
-        - Be encouraging.`;
+Soalan pelajar: "${soalan}"
+
+Beri jawapan yang DETAIL dan mudah faham dalam Bahasa Melayu:
+- Terangkan konsep dengan jelas
+- Beri contoh yang relevan
+- Untuk Matematik/Sains: tunjuk langkah pengiraan
+- Tambah tip peperiksaan di akhir
+- Beri semangat kepada pelajar`;
         
-        const response = await ai.models.generateContent({ 
-            model: 'gemini-3.8-flash', 
-            contents: prompt 
-        });
-        res.json({ status: "success", jawapan: response.text });
+        const jawapan = await callGroq(prompt);
+        res.json({ status: "success", jawapan });
     } catch (error) {
         console.error("Tanya Error:", error.message);
         res.status(500).json({ status: "error", message: "AI sibuk. Cuba lagi." });
     }
 });
 
-// ==========================================
-// 2. BUKU TEKS (DETAIL + JSON MODE)
-// ==========================================
+// 2. BUKU TEKS (DETAIL + JSON)
 app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
@@ -51,45 +74,33 @@ app.post('/api/buku-teks', async (req, res) => {
 
         const prompt = `You are a Malaysian textbook author writing for students at level: ${tahap}, subject: ${subjek}.
 
-Create ONE comprehensive chapter. Make the content RICH, DETAILED, and EDUCATIONAL.
+Create ONE comprehensive chapter. Make it RICH and DETAILED.
 
-Respond in VALID JSON with this exact structure:
-
+Respond in VALID JSON with this structure:
 {
-  "tajuk": "Chapter title (e.g., Bab 1: Introduction to [Topic])",
-  "kandungan": "Write 4-5 DETAILED paragraphs explaining the concept thoroughly. Include: (1) Introduction and definition, (2) Key concepts explained with examples, (3) Real-world applications, (4) Important formulas/rules (for Math/Science), (5) Summary. Use Bahasa Melayu. Be educational and thorough. Minimum 300 words.",
-  "soalan": "Create ONE exam-style practice question that tests understanding",
-  "pilihan": ["Option A text", "Option B text", "Option C text", "Option D text"],
+  "tajuk": "Chapter title",
+  "kandungan": "Write 4-5 DETAILED paragraphs explaining the concept thoroughly. Include: (1) Introduction and definition, (2) Key concepts with examples, (3) Real-world applications, (4) Formulas/rules (for Math/Science), (5) Summary. Bahasa Melayu. Minimum 300 words.",
+  "soalan": "Create ONE exam-style practice question",
+  "pilihan": ["Option A", "Option B", "Option C", "Option D"],
   "jawapan_betul": 0,
-  "penjelasan": "Detailed explanation (2-3 sentences) of why the correct answer is right and why others are wrong."
+  "penjelasan": "Detailed explanation (2-3 sentences) why the answer is correct."
 }
 
 RULES:
-- Content must be DETAILED and educational (minimum 300 words for "kandungan")
+- Content must be DETAILED (minimum 300 words)
 - Focus ONLY on subject: ${subjek}
-- Use proper academic Bahasa Melayu (mix English terms where standard)
-- Include real examples that students can relate to
-- jawapan_betul must be the index (0, 1, 2, or 3)`;
+- Academic Bahasa Melayu
+- jawapan_betul must be index (0, 1, 2, or 3)`;
 
-        const response = await ai.models.generateContent({ 
-            model: 'gemini-3.8-flash', 
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json"
-            }
-        });
+        const responseText = await callGroq(prompt, true);
+        console.log("AI Response length:", responseText.length);
         
-        let text = response.text.trim();
-        console.log("AI Response length:", text.length);
-        
-        // Buang markdown jika ada
+        let text = responseText.trim();
         text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         
         const data = JSON.parse(text);
         
-        // Validate
         if (!data.tajuk || !data.kandungan || !data.soalan) {
-            console.error("Data tidak lengkap:", data);
             throw new Error("Data tidak lengkap");
         }
         
@@ -112,28 +123,21 @@ RULES:
     }
 });
 
-// ==========================================
-// 3. NOTA RINGKAS (DETAIL)
-// ==========================================
+// 3. NOTA RINGKAS
 app.post('/api/nota-ringkas', async (req, res) => {
     try {
         const { topik, subjek, tahap } = req.body;
-        const prompt = `Create DETAILED study notes for ${tahap}, ${subjek}, topic: ${topik}.
+        const prompt = `Nota ringkas untuk ${tahap}, subjek ${subjek}, topik: ${topik}.
         
-        Format in Bahasa Melayu:
-        📌 DEFINISI - Clear definition
-        🔑 KONSEP UTAMA - 4-5 key points with explanations
-        📖 RUJUKAN - Quran/Hadith/Standard/Act references
-        💡 TIP PEPERIKSAAN - 3 exam tips
-        📝 CONTOH SOALAN - One example question
+Format dalam Bahasa Melayu:
+📌 DEFINISI - Definisi yang jelas
+🔑 KONSEP UTAMA - 4-5 poin utama dengan penjelasan
+📖 RUJUKAN - Rujukan Quran/Hadith/Standard/Act
+💡 TIP PEPERIKSAAN - 3 tip peperiksaan
+📝 CONTOH SOALAN - Satu contoh soalan`;
         
-        Be thorough and educational.`;
-        
-        const response = await ai.models.generateContent({ 
-            model: 'gemini-3.8-flash', 
-            contents: prompt 
-        });
-        res.json({ status: "success", nota: response.text });
+        const nota = await callGroq(prompt);
+        res.json({ status: "success", nota });
     } catch (error) {
         console.error("Nota Error:", error.message);
         res.status(500).json({ status: "error", message: "Gagal jana nota." });
