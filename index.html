@@ -6,7 +6,6 @@
     <title>Belajar AI - Premium</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
         :root {
             --bg-deep: #060d1f;
             --bg-mid: #0a1832;
@@ -20,15 +19,12 @@
             --text-green: #10b981;
             --text-red: #ef4444;
         }
-        
         body { 
             background: radial-gradient(ellipse at top, #0a1832 0%, #060d1f 60%);
             color: var(--text-white); 
             font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
             min-height: 100vh; padding: 0 0 20px;
         }
-        
-        /* HEADER */
         .header { 
             text-align: center; padding: 25px 15px 15px;
             background: linear-gradient(180deg, rgba(10,24,50,0.9), transparent);
@@ -55,8 +51,6 @@
             margin-top: 6px; letter-spacing: 3px; text-transform: uppercase;
             position: relative; z-index: 1;
         }
-        
-        /* TABS */
         .tabs { 
             display: flex; gap: 8px; padding: 0 15px; 
             margin: 15px auto; max-width: 800px;
@@ -65,16 +59,13 @@
             flex: 1; padding: 14px; border-radius: 12px; border: 1px solid var(--border-blue);
             cursor: pointer; font-weight: 800; font-size: 12px; 
             background: linear-gradient(135deg, rgba(15,36,71,0.8), rgba(10,24,50,0.8));
-            color: var(--text-gray);
-            transition: all 0.3s; letter-spacing: 1px;
+            color: var(--text-gray); transition: all 0.3s; letter-spacing: 1px;
         }
         .tab-btn.active { 
             background: linear-gradient(135deg, #3b82f6, #1e40af);
             color: #fff; border-color: var(--accent-light);
             box-shadow: 0 0 25px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
         }
-        
-        /* CONTAINER */
         .container { padding: 15px; max-width: 800px; margin: 0 auto; }
         .section-label { 
             font-size: 10px; color: var(--accent-light); font-weight: 900; 
@@ -85,8 +76,6 @@
             content: ''; flex: 1; height: 1px;
             background: linear-gradient(90deg, var(--border-blue), transparent);
         }
-        
-        /* TAHAP */
         .tahap-grid { 
             display: grid; grid-template-columns: repeat(5, 1fr); 
             gap: 6px; margin-bottom: 15px;
@@ -96,18 +85,14 @@
             border: 1px solid var(--border-blue); 
             font-size: 9px; font-weight: 800; cursor: pointer; 
             background: linear-gradient(135deg, rgba(15,36,71,0.5), rgba(10,24,50,0.5));
-            color: var(--text-gray);
-            transition: all 0.2s; letter-spacing: 0.5px;
+            color: var(--text-gray); transition: all 0.2s;
         }
         .tahap-btn:hover { border-color: var(--accent-blue); color: #fff; }
         .tahap-btn.active { 
             border-color: var(--accent-light); 
             background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(59,130,246,0.5);
+            color: #fff; box-shadow: 0 0 15px rgba(59,130,246,0.5);
         }
-        
-        /* SUBJEK */
         .subjek-grid { 
             display: grid; grid-template-columns: 1fr 1fr; 
             gap: 6px; margin-bottom: 15px; 
@@ -116,14 +101,12 @@
         .subjek-grid::-webkit-scrollbar { width: 5px; }
         .subjek-grid::-webkit-scrollbar-track { background: transparent; }
         .subjek-grid::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
-        
         .subjek-btn { 
             padding: 11px 12px; border-radius: 8px; 
             border: 1px solid var(--border-blue); 
             font-size: 11px; font-weight: 700; cursor: pointer; 
             background: linear-gradient(135deg, rgba(15,36,71,0.6), rgba(10,24,50,0.6));
-            color: var(--text-gray); text-align: left;
-            transition: all 0.2s;
+            color: var(--text-gray); text-align: left; transition: all 0.2s;
         }
         .subjek-btn:hover { border-color: var(--accent-blue); color: #fff; }
         .subjek-btn.active { 
@@ -131,8 +114,8 @@
             border-color: var(--accent-light); color: #fff;
             box-shadow: 0 0 15px rgba(59,130,246,0.4);
         }
+        .subjek-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        /* CONTENT BOX */
         .content-box { 
             background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9));
             border: 1px solid var(--border-blue);
@@ -140,8 +123,6 @@
             min-height: 250px;
             box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-        
-        /* BUKU TEKS */
         .buku-teks h2 { 
             font-size: 18px; color: var(--accent-gold); 
             margin-bottom: 15px; padding-bottom: 12px; 
@@ -150,31 +131,24 @@
         }
         .buku-teks p { 
             font-size: 14px; line-height: 1.9; 
-            color: #cbd5e1; margin-bottom: 15px; 
-            text-align: justify;
+            color: #cbd5e1; margin-bottom: 15px; text-align: justify;
         }
-        
-        /* LATIHAN BOX */
         .latihan-box { 
             margin-top: 25px; padding: 18px; 
             background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(30,64,175,0.05));
-            border-radius: 14px; 
-            border-left: 3px solid var(--accent-gold);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+            border-radius: 14px; border-left: 3px solid var(--accent-gold);
         }
         .latihan-box h3 { 
             font-size: 13px; color: var(--accent-gold); 
             margin-bottom: 12px; letter-spacing: 2px;
         }
-        
-        /* MCQ */
         .mcq-option { 
             display: block; width: 100%; padding: 14px 16px; 
             margin-bottom: 8px; border-radius: 10px; 
             border: 1px solid var(--border-blue); 
             background: rgba(15,36,71,0.5); color: #fff; 
-            font-size: 13px; text-align: left; cursor: pointer;
-            transition: all 0.2s; font-weight: 600;
+            font-size: 13px; text-align: left; cursor: pointer; font-weight: 600;
+            transition: all 0.2s;
         }
         .mcq-option:hover { 
             border-color: var(--accent-blue); 
@@ -191,23 +165,16 @@
             color: #fff; border-color: var(--text-red);
         }
         .mcq-option:disabled { cursor: not-allowed; }
-        
-        /* CHAT */
         .chat-box { 
             background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9));
             border: 1px solid var(--border-blue);
             border-radius: 18px; padding: 18px; margin-bottom: 15px; 
             min-height: 200px; max-height: 350px; overflow-y: auto;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
         }
         .chat-box::-webkit-scrollbar { width: 5px; }
         .chat-box::-webkit-scrollbar-track { background: transparent; }
         .chat-box::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
-        
-        .msg { 
-            margin-bottom: 10px; padding: 12px 16px; 
-            border-radius: 12px; font-size: 13px; line-height: 1.7;
-        }
+        .msg { margin-bottom: 10px; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7; }
         .msg.user { 
             background: linear-gradient(135deg, #1e40af, #3b82f6);
             margin-left: 30px; text-align: right;
@@ -218,22 +185,18 @@
             border-left: 3px solid var(--accent-light);
             color: #e2e8f0;
         }
-        
-        /* INPUT */
         .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
         .input-row input { 
             flex: 1; padding: 15px 20px; border-radius: 25px; 
             border: 1px solid var(--border-blue); 
             background: rgba(15,36,71,0.6); color: #fff; 
-            outline: none; font-size: 13px;
-            transition: all 0.2s;
+            outline: none; font-size: 13px; transition: all 0.2s;
         }
         .input-row input:focus { 
             border-color: var(--accent-light);
             box-shadow: 0 0 20px rgba(59,130,246,0.3);
         }
         .input-row input::placeholder { color: #64748b; }
-        
         .btn-hantar { 
             padding: 15px 26px; border-radius: 25px; border: none; 
             background: linear-gradient(135deg, #3b82f6, #1e40af);
@@ -242,21 +205,21 @@
             letter-spacing: 1px; transition: all 0.2s;
         }
         .btn-hantar:hover { transform: translateY(-1px); }
-        
-        .btn-action { 
-            width: 100%; padding: 16px; border-radius: 12px; 
-            border: 1px solid var(--border-blue); 
-            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,64,175,0.1));
-            color: #fff; font-weight: 800; cursor: pointer; 
-            margin-bottom: 10px; letter-spacing: 2px; font-size: 13px;
-            transition: all 0.2s;
-        }
-        .btn-action:hover { 
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            box-shadow: 0 4px 25px rgba(59,130,246,0.4);
-        }
-        
         .hidden { display: none; }
+        
+        /* Loading Spinner */
+        .loading-box { text-align: center; padding: 60px 20px; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(59,130,246,0.2);
+            border-top: 4px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: var(--accent-light); font-weight: 700; font-size: 14px; }
+        .error-text { color: var(--text-red); font-weight: 700; font-size: 14px; text-align: center; padding: 30px; }
     </style>
 </head>
 <body>
@@ -277,13 +240,15 @@
         <p class="section-label">📚 Pilih Subjek</p>
         <div class="subjek-grid" id="subjekGrid"></div>
 
+        <!-- BUKU TEKS VIEW -->
         <div id="viewBuku" class="content-box">
-            <div style="text-align: center; color: #64748b; padding: 40px 0;">
-                <p style="font-size: 14px; margin-bottom: 15px;">Pilih subjek di atas, kemudian tekan butang di bawah.</p>
-                <button class="btn-action" onclick="bukaBukuTeks()" style="max-width: 300px; margin: 0 auto;">📖 BUKA BUKU TEKS</button>
+            <div class="loading-box">
+                <div class="spinner"></div>
+                <p class="loading-text">Pilih subjek untuk membuka buku teks...</p>
             </div>
         </div>
 
+        <!-- CHAT VIEW -->
         <div id="viewChat" class="hidden">
             <div class="chat-box" id="chatBox">
                 <div class="msg ai">👋 Hai! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
@@ -318,6 +283,8 @@
         let tahapAktif = 'Part 3';
         let subjekAktif = 'ISH202: Halal Business and Marketing';
         let mcqData = null;
+        let tabAktif = 'buku';
+        let isLoading = false;
 
         function renderTahap() {
             const grid = document.getElementById('tahapGrid');
@@ -327,10 +294,12 @@
                 btn.className = 'tahap-btn' + (s === tahapAktif ? ' active' : '');
                 btn.innerText = s;
                 btn.onclick = () => { 
+                    if (isLoading) return;
                     tahapAktif = s; 
                     subjekAktif = dataSemester[s][0]; 
                     renderTahap(); 
                     renderSubjek(); 
+                    if (tabAktif === 'buku') bukaBukuTeks();
                 };
                 grid.appendChild(btn);
             });
@@ -343,22 +312,44 @@
                 const btn = document.createElement('button');
                 btn.className = 'subjek-btn' + (s === subjekAktif ? ' active' : '');
                 btn.innerText = s;
-                btn.onclick = () => { subjekAktif = s; renderSubjek(); };
+                btn.onclick = () => { 
+                    if (isLoading) return;
+                    subjekAktif = s; 
+                    renderSubjek(); 
+                    if (tabAktif === 'buku') bukaBukuTeks();
+                };
                 grid.appendChild(btn);
             });
         }
 
         function switchTab(tab) {
+            tabAktif = tab;
             document.getElementById('tabBuku').classList.toggle('active', tab === 'buku');
             document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
             document.getElementById('viewBuku').classList.toggle('hidden', tab !== 'buku');
             document.getElementById('viewChat').classList.toggle('hidden', tab !== 'chat');
+            
+            if (tab === 'buku' && subjekAktif) {
+                bukaBukuTeks();
+            }
         }
 
         async function bukaBukuTeks() {
-            const box = document.getElementById('viewBuku');
-            box.innerHTML = '<div style="text-align:center; padding: 40px; color: #60a5fa; font-weight: 700;">⏳ Menyediakan buku teks...</div>';
+            if (isLoading) return;
+            isLoading = true;
             
+            const box = document.getElementById('viewBuku');
+            box.innerHTML = `
+                <div class="loading-box">
+                    <div class="spinner"></div>
+                    <p class="loading-text">⏳ Menjana buku teks untuk <b>${subjekAktif}</b>...</p>
+                </div>
+            `;
+            
+            // Disable subject buttons
+            document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = true);
+            document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = true);
+
             try {
                 const res = await fetch('/api/buku-teks', {
                     method: 'POST',
@@ -388,10 +379,14 @@
                         </div>
                     `;
                 } else {
-                    box.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 30px;">❌ ' + (result.message || 'Gagal memuatkan buku teks.') + '</div>';
+                    box.innerHTML = `<div class="error-text">❌ ${result.message || 'Gagal memuatkan buku teks.'}</div>`;
                 }
             } catch (e) {
-                box.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 30px;">❌ Ralat sambungan.</div>';
+                box.innerHTML = '<div class="error-text">❌ Ralat sambungan. Sila cuba lagi.</div>';
+            } finally {
+                isLoading = false;
+                document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = false);
+                document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = false);
             }
         }
 
