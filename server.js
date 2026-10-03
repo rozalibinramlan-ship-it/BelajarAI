@@ -33,35 +33,40 @@ app.post('/api/tanya', async (req, res) => {
 app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
-        const prompt = `You are a Malaysian textbook author. Create ONE comprehensive chapter for level: ${tahap}, subject: ${subjek}.
-        
-        Reply ONLY in this exact JSON format (no other text, no markdown):
+        const prompt = `Create ONE comprehensive chapter for level: ${tahap}, subject: ${subjek}.
+        Reply ONLY in valid JSON format:
         {
-          "tajuk": "Bab 1: Tajuk Bab",
-          "kandungan": "Detailed textbook content here. Use paragraphs. Explain concepts clearly. Include examples.",
+          "tajuk": "Bab 1: ...",
+          "kandungan": "Textbook content...",
           "latihan": {
-            "soalan": "Question testing the chapter?",
-            "pilihan": ["Option A", "Option B", "Option C", "Option D"],
+            "soalan": "Question?",
+            "pilihan": ["A", "B", "C", "D"],
             "jawapan_betul": 0,
-            "penjelasan": "Why this answer is correct"
+            "penjelasan": "..."
           }
-        }
+        }`;
         
-        Rules:
-        - Content must be educational and easy to read.
-        - Bahasa Melayu (mix English for specific terms).
-        - Return ONLY JSON.`;
-        
-        const response = await ai.models.generateContent({ model: 'gemini-3.8-flash', contents: prompt });
+        const response = await ai.models.generateContent({ 
+            model: 'gemini-3.8-flash', 
+            contents: prompt,
+            config: { responseMimeType: "application/json" } // Paksa JSON
+        });
         
         let text = response.text.trim();
+        // Bersihkan jika ada markdown ```json
         text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         
-        const data = JSON.parse(text);
-        res.json({ status: "success", data });
+        try {
+            const data = JSON.parse(text);
+            res.json({ status: "success", data });
+        } catch (parseError) {
+            console.error("JSON Parse Error:", parseError.message);
+            // Fallback jika JSON rosak
+            res.json({ status: "error", message: "Format data tidak sah. Cuba lagi." });
+        }
     } catch (error) {
         console.error("Buku Teks Error:", error.message);
-        res.status(500).json({ status: "error", message: "Gagal jana bab." });
+        res.status(500).json({ status: "error", message: "Gagal jana bab. Sila cuba lagi." });
     }
 });
 

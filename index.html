@@ -6,30 +6,21 @@
     <title>Belajar AI - Buku Teks Interaktif</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background: linear-gradient(135deg, #0a1f1a 0%, #0f2a23 50%, #12362e 100%);
-            color: #fff; font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
-            min-height: 100vh; padding: 0 0 20px;
-        }
+        body { background: linear-gradient(135deg, #0a1f1a 0%, #0f2a23 50%, #12362e 100%); color: #fff; font-family: -apple-system, 'Segoe UI', Arial, sans-serif; min-height: 100vh; padding: 0 0 20px; }
         .header { text-align: center; padding: 20px 15px 10px; }
         .header h1 { font-size: 22px; font-weight: 900; color: #4ade80; text-shadow: 0 0 30px rgba(74, 222, 128, 0.5); }
         .header p { color: #a0aec0; font-size: 11px; margin-top: 4px; }
-        
         .tabs { display: flex; gap: 8px; padding: 0 15px; margin-bottom: 15px; max-width: 800px; margin-left: auto; margin-right: auto; }
         .tab-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: 800; font-size: 12px; background: rgba(255,255,255,0.08); color: #fff; transition: all 0.3s; }
         .tab-btn.active { background: linear-gradient(135deg, #4ade80, #22c55e); color: #0a1f1a; }
-        
         .container { padding: 15px; max-width: 800px; margin: 0 auto; }
         .section-label { font-size: 11px; color: #86efac; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin: 15px 0 10px; }
-        
         .tahap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 15px; }
         .tahap-btn { padding: 10px 4px; border-radius: 8px; border: 2px solid rgba(74, 222, 128, 0.2); font-size: 10px; font-weight: 800; cursor: pointer; background: rgba(74, 222, 128, 0.05); color: #fff; }
         .tahap-btn.active { border-color: #4ade80; background: rgba(74, 222, 128, 0.2); }
-        
         .subjek-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px; max-height: 200px; overflow-y: auto; padding-right: 5px; }
         .subjek-btn { padding: 10px; border-radius: 8px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; background: rgba(255, 255, 255, 0.06); color: #fff; text-align: left; }
         .subjek-btn.active { background: linear-gradient(135deg, #059669, #047857); border: 1px solid #4ade80; }
-        
         .content-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(74, 222, 128, 0.15); border-radius: 20px; padding: 20px; margin-bottom: 15px; min-height: 250px; }
         
         /* Gaya Buku Teks */
@@ -52,7 +43,6 @@
         .input-row input { flex: 1; padding: 14px; border-radius: 25px; border: 1px solid rgba(74, 222, 128, 0.2); background: rgba(255, 255, 255, 0.06); color: #fff; outline: none; font-size: 13px; }
         .btn-hantar { padding: 14px 20px; border-radius: 25px; border: none; background: #4ade80; color: #0a1f1a; font-weight: 900; cursor: pointer; }
         .btn-action { width: 100%; padding: 14px; border-radius: 12px; border: none; background: rgba(74, 222, 128, 0.15); color: #fff; font-weight: 700; cursor: pointer; margin-bottom: 10px; border: 1px solid rgba(74,222,128,0.3); }
-        
         .hidden { display: none; }
     </style>
 </head>
@@ -62,7 +52,6 @@
         <p>Buku Teks & Latihan Interaktif</p>
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
         <button class="tab-btn active" id="tabBuku" onclick="switchTab('buku')">📖 Buku Teks</button>
         <button class="tab-btn" id="tabChat" onclick="switchTab('chat')">💬 Tanya AI</button>
@@ -75,7 +64,6 @@
         <p class="section-label">📚 Pilih Subjek</p>
         <div class="subjek-grid" id="subjekGrid"></div>
 
-        <!-- TAB BUKU TEKS -->
         <div id="viewBuku" class="content-box">
             <div style="text-align: center; color: #64748b; padding: 40px 0;">
                 <p>Sila pilih subjek di atas, kemudian tekan butang di bawah untuk buka buku teks.</p>
@@ -83,7 +71,6 @@
             </div>
         </div>
 
-        <!-- TAB CHAT -->
         <div id="viewChat" class="hidden">
             <div class="chat-box" id="chatBox">
                 <div class="msg ai">👋 Hai! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
@@ -96,11 +83,27 @@
     </div>
 
     <script>
-        // Data subjek (ringkaskan untuk contoh, boleh tambah ikut keperluan)
+        // SENARAI LENGKAP: TAHUN 1 - DIPLOMA
         const dataSemester = {
-            'Tahun 5': ['Matematik', 'Sains', 'Bahasa Melayu', 'English', 'Sejarah'],
-            'Tingkatan 3': ['Matematik', 'Sains', 'Bahasa Melayu', 'English', 'Sejarah', 'Geografi'],
-            'Part 3': ['CTU263: Islam and Management', 'ISH202: Halal Business and Marketing', 'ISH203: Purification in Islam', 'ISC151: Introduction to Usul Fiqh']
+            // SEKOLAH RENDAH
+            'Tahun 1': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral'],
+            'Tahun 2': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral'],
+            'Tahun 3': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral'],
+            'Tahun 4': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Pendidikan Islam'],
+            'Tahun 5': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Pendidikan Islam'],
+            'Tahun 6': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Pendidikan Islam'],
+            // SEKOLAH MENENGAH
+            'Tingkatan 1': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam'],
+            'Tingkatan 2': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam'],
+            'Tingkatan 3': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam'],
+            'Tingkatan 4': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Fizik', 'Kimia', 'Biologi', 'Prinsip Akaun', 'Ekonomi'],
+            'Tingkatan 5': ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Fizik', 'Kimia', 'Biologi', 'Prinsip Akaun', 'Ekonomi'],
+            // DIPLOMA UiTM IC120 (HALAL MANAGEMENT)
+            'Part 1': ['CTU101: Fundamentals of Islam', 'ISC100: Aqidah Islamiyah', 'ISC102: Ulum Al-Quran', 'ISH101: Introduction to Halal Consumerism', 'LCC111: English I', 'MAT112: Business Mathematics'],
+            'Part 2': ['CSC134: Computer and Info Processing', 'CTU152: Values and Civilization', 'ISC101: Akhlaq Islamiyah', 'ISC152: Ulum Al-Hadith', 'ISC200: Tarikh Tasyri\'', 'ISH150: Principle of Food Science'],
+            'Part 3': ['CTU263: Islam and Management', 'IMU202: Islamic Economics', 'ISC151: Usul Fiqh', 'ISH202: Halal Business and Marketing', 'ISH203: Purification in Islam', 'LCC113: English III'],
+            'Part 4': ['ENT300: Entrepreneurship', 'IMU102: Fiqh Muamalat', 'ISC201: Qawaid Fiqhiyah', 'ISH250: Fiqh Mu\'asarah', 'ISH252: Halal Standard and Certification', 'ISH253: Halal Logistics Management'],
+            'Part 5': ['ISC251: Dirasah An-Nassiyah', 'ISH301: Halal Slaughtering', 'ISH304: Halal Regulatory and Governance', 'ISH305: Halal Quality and Assurance', 'ISH306: Industrial Training']
         };
 
         let tahapAktif = 'Part 3';
@@ -158,7 +161,6 @@
                         <div class="buku-teks">
                             <h2>${d.tajuk}</h2>
                             <p>${d.kandungan.replace(/\n/g, '<br><br>')}</p>
-                            
                             <div class="latihan-box">
                                 <h3>✍️ LATIHAN</h3>
                                 <p style="font-size: 14px; margin-bottom: 12px;">${d.latihan.soalan}</p>
@@ -172,10 +174,10 @@
                         </div>
                     `;
                 } else {
-                    box.innerHTML = '<div style="color: #ef4444; text-align: center;">Gagal memuatkan buku teks.</div>';
+                    box.innerHTML = '<div style="color: #ef4444; text-align: center;">❌ ' + (result.message || 'Gagal memuatkan buku teks.') + '</div>';
                 }
             } catch (e) {
-                box.innerHTML = '<div style="color: #ef4444; text-align: center;">Ralat sambungan.</div>';
+                box.innerHTML = '<div style="color: #ef4444; text-align: center;">❌ Ralat sambungan.</div>';
             }
         }
 
