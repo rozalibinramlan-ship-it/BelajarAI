@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar AI - Tahun 1 hingga SPM</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff; font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh; padding: 0 0 20px;
+        }
+        .header { text-align: center; padding: 25px 15px 15px; }
+        .header h1 { 
+            font-size: 26px; font-weight: 900; letter-spacing: 1px;
+            color: #ffd93d;
+            text-shadow: 0 0 30px rgba(255, 217, 61, 0.4);
+        }
+        .header p { color: #a0aec0; font-size: 13px; margin-top: 6px; }
+        .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+        
+        .section-label { 
+            font-size: 11px; color: #a0aec0; font-weight: 800; 
+            letter-spacing: 2px; text-transform: uppercase; 
+            margin: 15px 0 10px;
+        }
+        
+        .tahap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .tahap-btn {
+            padding: 12px 8px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1);
+            font-size: 12px; font-weight: 800; cursor: pointer;
+            background: rgba(255,255,255,0.05); color: #fff;
+            transition: all 0.2s;
+        }
+        .tahap-btn.active { 
+            border-color: #ffd93d; background: rgba(255, 217, 61, 0.15);
+            box-shadow: 0 0 15px rgba(255, 217, 61, 0.4);
+        }
+        .tahap-btn.rendah { border-left: 3px solid #3b82f6; }
+        .tahap-btn.menengah { border-left: 3px solid #ec4899; }
+        
+        .subjek-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .subjek-btn {
+            padding: 14px; border-radius: 12px; border: 2px solid transparent;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            background: rgba(255, 255, 255, 0.06); color: #fff;
+            transition: all 0.3s; text-align: left;
+        }
+        .subjek-btn.active { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-color: #ffd93d; transform: scale(1.02);
+        }
+        .subjek-btn:hover { background: rgba(255,255,255,0.12); }
+        
+        .chat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px; padding: 18px; margin-bottom: 15px;
+            min-height: 250px; max-height: 450px; overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+        .msg { margin-bottom: 12px; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.65; white-space: pre-wrap; }
+        .msg.user { background: linear-gradient(135deg, #3b82f6, #2563eb); margin-left: 40px; text-align: right; }
+        .msg.ai { background: rgba(255, 255, 255, 0.08); border-left: 3px solid #ffd93d; }
+        .msg.loading { color: #ffd93d; font-style: italic; }
+        
+        .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .input-row input {
+            flex: 1; padding: 16px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 15px; outline: none;
+        }
+        .input-row input:focus { border-color: #ffd93d; }
+        .input-row input::placeholder { color: #718096; }
+        .btn-hantar {
+            padding: 16px 24px; border-radius: 30px; border: none; cursor: pointer;
+            background: linear-gradient(135deg, #ffd93d, #f59e0b);
+            color: #1a1a2e; font-weight: 900; font-size: 15px;
+            box-shadow: 0 4px 20px rgba(255, 217, 61, 0.4);
+        }
+        .btn-rawak {
+            width: 100%; padding: 14px; border-radius: 14px; cursor: pointer;
+            background: rgba(255, 255, 255, 0.08); color: #fff;
+            font-weight: 700; font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .btn-rawak:hover { background: rgba(255, 255, 255, 0.15); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Belajar AI</h1>
+        <p>Tahun 1 hingga SPM • Ikut Silibus Malaysia</p>
+    </div>
+
+    <div class="container">
+        <p class="section-label">📅 Pilih Tahap</p>
+        <div class="tahap-grid" id="tahapGrid"></div>
+
+        <p class="section-label">📚 Pilih Subjek</p>
+        <div class="subjek-grid" id="subjekGrid"></div>
+
+        <div class="chat-box" id="chatBox">
+            <div class="msg ai">👋 Hai! Saya kawan belajar kamu. Pilih tahap dan subjek, lepas tu tanya apa-apa soalan! 😊</div>
+        </div>
+
+        <div class="input-row">
+            <input type="text" id="soalan" placeholder="Taip soalan kamu..." onkeypress="if(event.key==='Enter') tanya()">
+            <button class="btn-hantar" onclick="tanya()">Tanya</button>
+        </div>
+
+        <button class="btn-rawak" onclick="soalanRawak()">🎲 Bagi Saya Soalan Latihan</button>
+    </div>
+
+    <script>
+        // Senarai tahap
+        const tahapList = [
+            { id: 'Tahun 1', jenis: 'rendah' }, { id: 'Tahun 2', jenis: 'rendah' },
+            { id: 'Tahun 3', jenis: 'rendah' }, { id: 'Tahun 4', jenis: 'rendah' },
+            { id: 'Tahun 5', jenis: 'rendah' }, { id: 'Tahun 6', jenis: 'rendah' },
+            { id: 'Tingkatan 1', jenis: 'menengah' }, { id: 'Tingkatan 2', jenis: 'menengah' },
+            { id: 'Tingkatan 3', jenis: 'menengah' }, { id: 'Tingkatan 4', jenis: 'menengah' },
+            { id: 'Tingkatan 5', jenis: 'menengah' }
+        ];
+
+        // Subjek ikut tahap
+        const subjekRendah = ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Pendidikan Islam', 'Pendidikan Moral', 'Sejarah', 'Bahasa Arab'];
+        const subjekMenengah = ['Bahasa Melayu', 'English', 'Matematik', 'Sains', 'Sejarah', 'Geografi', 'Pendidikan Islam', 'Pendidikan Moral', 'Fizik', 'Kimia', 'Biologi', 'Matematik Tambahan', 'Prinsip Akaun', 'Ekonomi', 'Sains Komputer'];
+
+        let tahapAktif = 'Tahun 1';
+        let subjekAktif = 'Bahasa Melayu';
+
+        // Render butang tahap
+        function renderTahap() {
+            const grid = document.getElementById('tahapGrid');
+            grid.innerHTML = '';
+            tahapList.forEach(t => {
+                const btn = document.createElement('button');
+                btn.className = 'tahap-btn ' + t.jenis + (t.id === tahapAktif ? ' active' : '');
+                btn.innerText = t.id;
+                btn.onclick = () => {
+                    tahapAktif = t.id;
+                    subjekAktif = ''; // reset subjek
+                    renderTahap();
+                    renderSubjek();
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        // Render butang subjek
+        function renderSubjek() {
+            const grid = document.getElementById('subjekGrid');
+            grid.innerHTML = '';
+            const list = tahapAktif.includes('Tahun') ? subjekRendah : subjekMenengah;
+            if (!subjekAktif) subjekAktif = list[0];
+            
+            list.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'subjek-btn' + (s === subjekAktif ? ' active' : '');
+                btn.innerText = s;
+                btn.onclick = () => {
+                    subjekAktif = s;
+                    renderSubjek();
+                    tambahMesej('ai', '✅ Subjek: ' + s + ' • Tahap: ' + tahapAktif + '. Jom tanya!');
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function tambahMesej(jenis, teks) {
+            const box = document.getElementById('chatBox');
+            const div = document.createElement('div');
+            div.className = 'msg ' + jenis;
+            div.innerText = teks;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+            return div;
+        }
+
+        async function tanya() {
+            const input = document.getElementById('soalan');
+            const soalan = input.value.trim();
+            if (!soalan) return;
+
+            tambahMesej('user', soalan);
+            input.value = '';
+            const loading = tambahMesej('ai loading', '⏳ AI sedang berfikir...');
+
+            try {
+                const res = await fetch('/api/tanya', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ soalan, subjek: subjekAktif, tahap: tahapAktif })
+                });
+                const data = await res.json();
+                loading.remove();
+                if (data.status === 'success') tambahMesej('ai', data.jawapan);
+                else tambahMesej('ai', '❌ ' + (data.message || 'Cuba lagi.'));
+            } catch (e) {
+                loading.remove();
+                tambahMesej('ai', '❌ Ralat sambungan.');
+            }
+        }
+
+        async function soalanRawak() {
+            const loading = tambahMesej('ai loading', '⏳ Sedang jana soalan...');
+            try {
+                const res = await fetch('/api/soalan-rawak', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subjek: subjekAktif, tahap: tahapAktif })
+                });
+                const data = await res.json();
+                loading.remove();
+                if (data.status === 'success') {
+                    tambahMesej('ai', '📝 Cuba jawab soalan ini (' + subjekAktif + ' ' + tahapAktif + '):\n\n' + data.soalan);
+                    document.getElementById('soalan').placeholder = 'Taip jawapan kamu...';
+                }
+            } catch (e) { loading.remove(); tambahMesej('ai', '❌ Gagal jana soalan.'); }
+        }
+
+        // Init
+        renderTahap();
+        renderSubjek();
+    </script>
+</body>
+</html>
