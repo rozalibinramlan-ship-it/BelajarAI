@@ -20,11 +20,10 @@ const GROQ_KEY = process.env.GROQ_API_KEY;
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 // Model list with fallback (in priority order)
+// Menggunakan model yang masih aktif di Groq setakat Oktober 2026
 const MODELS = [
-  "llama-3.3-70b-versatile",
-  "meta-llama/llama-4-scout-17b-16e-instruct",
-  "openai/gpt-oss-20b",
-  "qwen/qwen3-32b"
+  "openai/gpt-oss-120b",
+  "openai/gpt-oss-20b"
 ];
 
 // ===== SYSTEM PROMPT =====
@@ -42,8 +41,8 @@ async function callGroq(userPrompt, options = {}) {
 
   const {
     temperature = 0.7,
-    max_tokens = 2200,
-    jsonMode = false
+    max_tokens = 2200
+    // jsonMode dibuang buat masa ini untuk elakkan ralat pengesahan
   } = options;
 
   let lastError = null;
@@ -60,10 +59,6 @@ async function callGroq(userPrompt, options = {}) {
         max_tokens
       };
 
-      if (jsonMode) {
-        body.response_format = { type: "json_object" };
-      }
-
       const res = await fetch(GROQ_URL, {
         method: "POST",
         headers: {
@@ -78,6 +73,7 @@ async function callGroq(userPrompt, options = {}) {
       if (!res.ok) {
         const msg = data?.error?.message || JSON.stringify(data).slice(0, 300);
 
+        // Jika model tidak wujud atau tiada akses, cuba model seterusnya
         if (
           msg.includes("does not exist") ||
           msg.includes("do not have access") ||
@@ -89,6 +85,7 @@ async function callGroq(userPrompt, options = {}) {
           continue;
         }
 
+        // Ralat lain (rate limit, auth, dll) - teruskan ke model seterusnya atau throw
         throw new Error(`Groq API error (${model}): ${msg}`);
       }
 
@@ -165,8 +162,9 @@ Requirements:
 - jawapan_betul must be an index (0-3) matching the correct option
 `.trim();
 
-    const raw = await callGroq(prompt, { jsonMode: true, temperature: 0.7 });
+    const raw = await callGroq(prompt, { temperature: 0.7, max_tokens: 1800 });
 
+    // Robust JSON extraction (tanpa bergantung pada json mode API)
     const cleaned = raw.replace(/```json|```/g, "").trim();
     const start = cleaned.indexOf("{");
     const end = cleaned.lastIndexOf("}");
@@ -177,6 +175,7 @@ Requirements:
 
     const parsed = JSON.parse(cleaned.slice(start, end + 1));
 
+    // Validate structure
     if (!parsed.tajuk || !parsed.kandungan || !parsed.latihan) {
       throw new Error("AI response is missing required fields.");
     }
@@ -228,6 +227,6 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`✅ Groq API Key: ${GROQ_KEY ? "CONFIGURED" : "MISSING ⚠️"}`);
   console.log(`✅ Primary model: ${MODELS[0]}`);
-  console.log(`✅ Fallback models: ${MODELS.slice(1).join(", ")}`);
+  console.log(`✅ Fallback models: ${MODELS.slice(1).join(", ") || "(none)"}`);
   console.log("════════════════════════════════════════════");
 });
