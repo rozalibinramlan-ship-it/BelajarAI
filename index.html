@@ -1,220 +1,169 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belajar AI - Diploma Halal</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --bg-deep: #060d1f;
-            --bg-mid: #0a1832;
-            --bg-card: #0f2447;
-            --border-blue: #1e3a8a;
-            --accent-blue: #3b82f6;
-            --accent-light: #60a5fa;
-            --accent-gold: #fbbf24;
-            --text-white: #f8fafc;
-            --text-gray: #94a3b8;
-            --text-green: #10b981;
-            --text-red: #ef4444;
-        }
-        body {
-            background: radial-gradient(ellipse at top, #0a1832 0%, #060d1f 60%);
-            color: var(--text-white);
-            font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
-            min-height: 100vh; padding: 0 0 20px;
-        }
-       .header {
-            text-align: center; padding: 25px 15px 15px;
-            background: linear-gradient(180deg, rgba(10,24,50,0.9), transparent);
-            border-bottom: 1px solid var(--border-blue);
-            position: relative; overflow: hidden;
-        }
-       .header::before {
-            content: ''; position: absolute; top: -50%; left: 50%;
-            transform: translateX(-50%); width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%);
-            pointer-events: none;
-        }
-       .header.logo {
-            width: 85px; height: 85px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--accent-light);
-            box-shadow: 0 0 20px rgba(96,165,250,0.6);
-            margin-bottom: 10px;
-            position: relative; z-index: 1;
-        }
-       .header h1 {
-            font-size: 24px; font-weight: 900;
-            background: linear-gradient(90deg, #60a5fa, #fbbf24, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 2px;
-            position: relative; z-index: 1;
-        }
-       .header p {
-            color: var(--text-gray); font-size: 11px;
-            margin-top: 6px; letter-spacing: 3px; text-transform: uppercase;
-            position: relative; z-index: 1;
-        }
-        /*... rest sama... */
-       .tabs { display: flex; gap: 8px; padding: 0 15px; margin: 15px auto; max-width: 800px; }
-       .tab-btn { flex: 1; padding: 14px; border-radius: 12px; border: 1px solid var(--border-blue); cursor: pointer; font-weight: 800; font-size: 12px; background: linear-gradient(135deg, rgba(15,36,71,0.8), rgba(10,24,50,0.8)); color: var(--text-gray); transition: all 0.3s; letter-spacing: 1px; }
-       .tab-btn.active { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; border-color: var(--accent-light); box-shadow: 0 0 25px rgba(59,130,246,0.5); }
-       .container { padding: 15px; max-width: 800px; margin: 0 auto; }
-       .section-label { font-size: 10px; color: var(--accent-light); font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin: 18px 0 10px; display: flex; align-items: center; gap: 8px; }
-       .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-blue), transparent); }
-       .tahap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 15px; }
-       .tahap-btn { padding: 12px 4px; border-radius: 10px; border: 1px solid var(--border-blue); font-size: 11px; font-weight: 800; cursor: pointer; background: linear-gradient(135deg, rgba(15,36,71,0.5), rgba(10,24,50,0.5)); color: var(--text-gray); transition: all 0.2s; }
-       .tahap-btn.active { border-color: var(--accent-light); background: linear-gradient(135deg, #1e40af, #3b82f6); color: #fff; box-shadow: 0 0 15px rgba(59,130,246,0.5); }
-       .subjek-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 15px; }
-       .subjek-btn { padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border-blue); font-size: 12px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, rgba(15,36,71,0.6), rgba(10,24,50,0.6)); color: var(--text-gray); text-align: left; }
-       .subjek-btn.active { background: linear-gradient(135deg, #1e40af, #2563eb); border-color: var(--accent-light); color: #fff; }
-       .content-box { background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9)); border: 1px solid var(--border-blue); border-radius: 18px; padding: 22px; margin-bottom: 15px; min-height: 250px; box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
-       .buku-teks h2 { font-size: 18px; color: var(--accent-gold); margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid var(--border-blue); }
-       .buku-teks p { font-size: 14px; line-height: 1.9; color: #cbd5e1; margin-bottom: 15px; text-align: justify; }
-       .latihan-box { margin-top: 25px; padding: 18px; background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(30,64,175,0.05)); border-radius: 14px; border-left: 3px solid var(--accent-gold); }
-       .mcq-option { display: block; width: 100%; padding: 14px 16px; margin-bottom: 8px; border-radius: 10px; border: 1px solid var(--border-blue); background: rgba(15,36,71,0.5); color: #fff; font-size: 13px; text-align: left; cursor: pointer; }
-       .mcq-option.correct { background: linear-gradient(135deg, #059669, #10b981); }
-       .mcq-option.wrong { background: linear-gradient(135deg, #991b1b, #ef4444); }
-       .chat-box { background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9)); border: 1px solid var(--border-blue); border-radius: 18px; padding: 18px; margin-bottom: 15px; min-height: 200px; max-height: 400px; overflow-y: auto; }
-       .msg { margin-bottom: 10px; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7; }
-       .msg.user { background: linear-gradient(135deg, #1e40af, #3b82f6); margin-left: 30px; text-align: right; }
-       .msg.ai { background: rgba(15,36,71,0.6); border-left: 3px solid var(--accent-light); color: #e2e8f0; }
-       .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
-       .input-row input { flex: 1; padding: 15px 20px; border-radius: 25px; border: 1px solid var(--border-blue); background: rgba(15,36,71,0.6); color: #fff; outline: none; font-size: 13px; }
-       .btn-hantar { padding: 15px 26px; border-radius: 25px; border: none; background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; font-weight: 900; cursor: pointer; }
-       .hidden { display: none; }
-       .loading-box { text-align: center; padding: 60px 20px; }
-       .spinner { width: 50px; height: 50px; border: 4px solid rgba(59,130,246,0.2); border-top: 4px solid var(--accent-blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-       .loading-text { color: var(--accent-light); font-weight: 700; font-size: 14px; }
-       .error-text { color: var(--text-red); font-weight: 700; font-size: 14px; text-align: center; padding: 30px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar AI - Premium VIP</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#020b1e;display:flex;justify-content:center;padding:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+.app{width:100%;max-width:400px;background:linear-gradient(180deg,#0a1e3d 0%,#07162f 100%);border:3px solid #d4a017;border-radius:28px;padding:16px 12px 25px;box-shadow:0 0 30px rgba(212,160,23,0.3);min-height:100vh}
+.crown{text-align:center;font-size:32px;margin-top:4px}
+.badge-premium{display:flex;justify-content:center;margin:6px 0 8px}
+.badge-premium span{background:linear-gradient(90deg,#d4a017,#f8d56b,#d4a017);color:#1a1200;font-weight:900;font-size:10px;letter-spacing:2px;padding:7px 16px;border-radius:20px}
+.title{text-align:center;color:#f8d56b;font-weight:900;font-size:20px;letter-spacing:3px}
+.subtitle{text-align:center;color:#d4a017;font-size:9px;letter-spacing:3px;margin:4px 0 14px}
+.card{background:linear-gradient(135deg,rgba(15,40,80,0.9),rgba(7,22,47,0.9));border:2px solid #d4a017;border-radius:18px;padding:12px;margin-bottom:14px}
+.vip-card{display:flex;align-items:center;gap:10px;position:relative}
+.vip-avatar{width:55px;height:55px;border-radius:50%;border:2px solid #d4a017;object-fit:cover;box-shadow:0 0 12px rgba(212,160,23,0.5);flex-shrink:0}
+.vip-info{flex:1}
+.vip-label{color:#d4a017;font-size:8px;letter-spacing:2px;font-weight:800}
+.vip-name{color:#fff;font-weight:900;font-size:18px;margin:2px 0}
+.vip-member{background:linear-gradient(90deg,#8b4513,#cd7f32);color:#fff;font-size:9px;font-weight:800;padding:4px 10px;border-radius:10px;display:inline-block}
+.btn-edit{width:38px;height:38px;background:#d4a017;border-radius:10px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:16px}
+.section-title{text-align:center;color:#d4a017;font-size:10px;letter-spacing:2px;font-weight:900;margin-bottom:10px}
+.tahun-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tahun-btn{padding:10px;border-radius:11px;border:1.5px solid #2a4a7a;background:rgba(10,30,61,0.6);color:#8da0c0;font-weight:800;font-size:11px;cursor:pointer}
+.tahun-btn.active{background:#d4a017;color:#1a1200;border-color:#f8d56b;box-shadow:0 0 12px rgba(212,160,23,0.6)}
+.kotak-label{text-align:center;color:#d4a017;font-size:10px;letter-spacing:2px;font-weight:900;margin:14px 0 10px}
+.subjek-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.subjek-box{background:rgba(10,30,61,0.7);border-radius:14px;padding:10px;text-align:center;cursor:pointer;min-height:85px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:0.2s}
+.subjek-box.biru{border:1.5px solid #3b82f6}
+.subjek-box.pink{border:1.5px solid #ec4899}
+.subjek-box.kuning{border:1.5px solid #d4a017}
+.subjek-box.hijau{border:1.5px solid #10b981}
+.subjek-box.active{box-shadow:0 0 15px currentColor;transform:scale(1.03)}
+.subjek-icon{font-size:24px;margin-bottom:4px}
+.subjek-nama{font-size:10px;font-weight:800;color:#fff}
+.subjek-desc{font-size:7px;color:#64748b;margin-top:2px}
+.content-view{margin-top:12px;background:rgba(0,0,0,0.3);border:1px solid #1e3a5f;border-radius:14px;padding:14px;min-height:180px;color:#cbd5e1;font-size:12px;line-height:1.6}
+.hidden{display:none}
+.tabs{display:flex;gap:6px;margin-top:12px}
+.tab-btn{flex:1;padding:10px;border-radius:12px;border:1.5px solid #2a4a7a;background:rgba(10,30,61,0.6);color:#8da0c0;font-weight:800;font-size:11px;cursor:pointer}
+.tab-btn.active{background:#d4a017;color:#1a1200;border-color:#f8d56b}
+.input-row{display:flex;gap:6px;margin-top:10px}
+.input-row input{flex:1;padding:11px 14px;border-radius:18px;border:1px solid #2a4a7a;background:#0a1e3d;color:#fff;outline:none;font-size:11px}
+.btn-tanya{padding:11px 16px;border-radius:18px;border:none;background:#d4a017;color:#1a1200;font-weight:900;cursor:pointer;font-size:11px}
+.msg{padding:9px 12px;border-radius:11px;margin-bottom:7px;font-size:11px}
+.msg.ai{background:rgba(212,160,23,0.1);border-left:2px solid #d4a017}
+.msg.user{background:#d4a017;color:#1a1200;text-align:right;margin-left:25px}
+</style>
 </head>
 <body>
-    <div class="header">
-        <img src="logo.png" alt="Logo" class="logo">
-        <h1>BELAJAR AI</h1>
-        <p>Diploma Pengurusan Halal</p>
-    </div>
+<div class="app">
+  <div class="crown">👑</div>
+  <div class="badge-premium"><span>💎 EDISI PREMIUM VIP</span></div>
+  <div class="title">BELAJAR AI</div>
+  <div class="subtitle">✦ DIPLOMA HALAL — SEM 1-5 ✦</div>
 
-    <div class="tabs">
-        <button class="tab-btn active" id="tabBuku" onclick="switchTab('buku')">📖 BUKU TEKS</button>
-        <button class="tab-btn" id="tabChat" onclick="switchTab('chat')">💬 TANYA AI</button>
+  <div class="card vip-card">
+    <img src="logo.png" class="vip-avatar" alt="logo">
+    <div class="vip-info">
+      <div class="vip-label">👑 AHLI VIP</div>
+      <div class="vip-name" id="namaVIP">Pelajar Halal</div>
+      <div class="vip-member">💎 BRONZE MEMBER</div>
     </div>
+    <button class="btn-edit" onclick="editNama()">✏️</button>
+  </div>
 
-    <div class="container">
-        <p class="section-label">📅 Pilih Semester</p>
-        <div class="tahap-grid" id="tahapGrid"></div>
-        <p class="section-label">📚 Pilih Subjek</p>
-        <div class="subjek-grid" id="subjekGrid"></div>
-        <div id="viewBuku" class="content-box">
-            <div class="loading-box">
-                <div class="spinner"></div>
-                <p class="loading-text">Sila pilih subjek untuk membuka buku teks...</p>
-            </div>
-        </div>
-        <div id="viewChat" class="hidden">
-            <div class="chat-box" id="chatBox">
-                <div class="msg ai">👋 Assalamualaikum! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
-            </div>
-            <div class="input-row">
-                <input type="text" id="soalan" placeholder="Taip soalan..." onkeypress="if(event.key==='Enter') tanya()">
-                <button class="btn-hantar" onclick="tanya()">TANYA</button>
-            </div>
-        </div>
+  <div class="card">
+    <div class="section-title">📅 PILIH SEMESTER ANDA</div>
+    <div class="tahun-grid" id="tahapGrid"></div>
+  </div>
+
+  <div class="kotak-label">👇 KLIK KOTAK SUBJEK 👇</div>
+  <div class="subjek-grid" id="subjekGrid"></div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="btnBuku" onclick="showTab('buku')">📚 BUKU TEKS</button>
+    <button class="tab-btn" id="btnChat" onclick="showTab('chat')">💬 TANYA AI</button>
+  </div>
+
+  <div id="viewBuku" class="content-view">Pilih subjek untuk buka buku teks...</div>
+
+  <div id="viewChat" class="content-view hidden">
+    <div id="chatBox"><div class="msg ai">👋 Assalamualaikum! Saya AI Tutor Halal. Tanya apa saja tentang subjek <b id="subjekChat">-</b></div></div>
+    <div class="input-row">
+      <input type="text" id="soalan" placeholder="Taip soalan..." onkeypress="if(event.key==='Enter') tanya()">
+      <button class="btn-tanya" onclick="tanya()">TANYA</button>
     </div>
+  </div>
+</div>
 
-    <script>
-        const dataSemester = {
-            'Sem 1': ['CTU101: Fundamentals of Islam', 'ISC100: Aqidah Islamiyah', 'ISC102: Ulum Al-Quran', 'ISH101: Introduction to Halal Consumerism', 'LCC111: English I', 'MAT112: Business Mathematics'],
-            'Sem 2': ['CSC134: Computer and Info Processing', 'CTU152: Values and Civilization', 'ISC101: Akhlaq Islamiyah', 'ISC152: Ulum Al-Hadith', 'ISC200: Tarikh Tasyri\'', 'ISH150: Principle of Food Science'],
-            'Sem 3': ['CTU263: Islam and Management', 'IMU202: Islamic Economics', 'ISC151: Usul Fiqh', 'ISH202: Halal Business and Marketing', 'ISH203: Purification in Islam', 'LCC113: English III'],
-            'Sem 4': ['ENT300: Entrepreneurship', 'IMU102: Fiqh Muamalat', 'ISC201: Qawaid Fiqhiyah', 'ISH250: Fiqh Mu\'asarah', 'ISH252: Halal Standard and Certification', 'ISH253: Halal Logistics Management'],
-            'Sem 5': ['ISC251: Dirasah An-Nassiyah', 'ISH301: Halal Slaughtering', 'ISH304: Halal Regulatory and Governance', 'ISH305: Halal Quality and Assurance', 'ISH306: Industrial Training']
-        };
-        let tahapAktif = 'Sem 3';
-        let subjekAktif = 'ISH202: Halal Business and Marketing';
-        let mcqData = null;
-        let tabAktif = 'buku';
-        let isLoading = false;
-        function renderTahap() {
-            const grid = document.getElementById('tahapGrid');
-            grid.innerHTML = '';
-            Object.keys(dataSemester).forEach(s => {
-                const btn = document.createElement('button');
-                btn.className = 'tahap-btn' + (s === tahapAktif? ' active' : '');
-                btn.innerText = s;
-                btn.onclick = () => { if (isLoading) return; tahapAktif = s; subjekAktif = dataSemester[s][0]; renderTahap(); renderSubjek(); if (tabAktif === 'buku') bukaBukuTeks(); };
-                grid.appendChild(btn);
-            });
-        }
-        function renderSubjek() {
-            const grid = document.getElementById('subjekGrid');
-            grid.innerHTML = '';
-            dataSemester[tahapAktif].forEach(s => {
-                const btn = document.createElement('button');
-                btn.className = 'subjek-btn' + (s === subjekAktif? ' active' : '');
-                btn.innerText = s;
-                btn.onclick = () => { if (isLoading) return; subjekAktif = s; renderSubjek(); if (tabAktif === 'buku') bukaBukuTeks(); };
-                grid.appendChild(btn);
-            });
-        }
-        function switchTab(tab) {
-            tabAktif = tab;
-            document.getElementById('tabBuku').classList.toggle('active', tab === 'buku');
-            document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
-            document.getElementById('viewBuku').classList.toggle('hidden', tab!== 'buku');
-            document.getElementById('viewChat').classList.toggle('hidden', tab!== 'chat');
-            if (tab === 'buku' && subjekAktif) bukaBukuTeks();
-        }
-        async function bukaBukuTeks() {
-            if (isLoading) return;
-            isLoading = true;
-            const box = document.getElementById('viewBuku');
-            box.innerHTML = `<div class="loading-box"><div class="spinner"></div><p class="loading-text">⏳ Menjana buku teks untuk <b>${subjekAktif}</b>...</p></div>`;
-            document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = true);
-            document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = true);
-            try {
-                const res = await fetch('/api/buku-teks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ subjek: subjekAktif, tahap: tahapAktif }) });
-                const result = await res.json();
-                if (result.status === 'success') {
-                    const d = result.data;
-                    mcqData = d.latihan;
-                    box.innerHTML = `<div class="buku-teks"><h2>${d.tajuk}</h2><p>${d.kandungan.replace(/\n/g, '<br><br>')}</p><div class="latihan-box"><h3>✍️ LATIHAN</h3><p style="font-size: 14px; margin-bottom: 12px; color: #e2e8f0;">${d.latihan.soalan}</p><div id="mcqContainer">${d.latihan.pilihan.map((p, i) => `<button class="mcq-option" onclick="jawabLatihan(${i}, this)">${p}</button>`).join('')}</div><div id="feedback" style="margin-top: 12px; font-size: 13px; font-weight: bold;"></div></div></div>`;
-                } else { box.innerHTML = `<div class="error-text">❌ ${result.message || 'Gagal memuatkan buku teks.'}</div>`; }
-            } catch (e) { box.innerHTML = '<div class="error-text">❌ Ralat sambungan. Sila cuba lagi.</div>'; }
-            finally { isLoading = false; document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = false); document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = false); }
-        }
-        function jawabLatihan(index, btn) {
-            const semuaBtn = document.querySelectorAll('.mcq-option');
-            semuaBtn.forEach(b => b.disabled = true);
-            if (index === mcqData.jawapan_betul) { btn.classList.add('correct'); document.getElementById('feedback').innerHTML = '<span style="color:#10b981;">✅ Betul! ' + mcqData.penjelasan + '</span>'; }
-            else { btn.classList.add('wrong'); semuaBtn[mcqData.jawapan_betul].classList.add('correct'); document.getElementById('feedback').innerHTML = '<span style="color:#ef4444;">❌ Salah. ' + mcqData.penjelasan + '</span>'; }
-        }
-        async function tanya() {
-            const input = document.getElementById('soalan');
-            const soalan = input.value.trim();
-            if (!soalan) return;
-            const box = document.getElementById('chatBox');
-            box.innerHTML += `<div class="msg user">${soalan}</div>`;
-            input.value = '';
-            box.innerHTML += `<div class="msg ai" id="loading">⏳ AI sedang berfikir...</div>`;
-            box.scrollTop = box.scrollHeight;
-            try {
-                const res = await fetch('/api/tanya', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ soalan, subjek: subjekAktif, tahap: tahapAktif }) });
-                const data = await res.json();
-                document.getElementById('loading').remove();
-                if (data.status === 'success') box.innerHTML += `<div class="msg ai">${data.jawapan}</div>`;
-                else box.innerHTML += `<div class="msg ai">❌ Maaf, cuba lagi.</div>`;
-            } catch (e) { document.getElementById('loading').remove(); box.innerHTML += `<div class="msg ai">❌ Ralat sambungan.</div>`; }
-            box.scrollTop = box.scrollHeight;
-        }
-        renderTahap(); renderSubjek();
-    </script>
+<script>
+const dataSemester={
+'Sem 1':['CTU101','ISC100','ISC102','ISH101','LCC111','MAT112'],
+'Sem 2':['CSC134','CTU152','ISC101','ISC152','ISC200','ISH150'],
+'Sem 3':['CTU263','IMU202','ISC151','ISH202','ISH203','LCC113'],
+'Sem 4':['ENT300','IMU102','ISC201','ISH250','ISH252','ISH253'],
+'Sem 5':['ISC251','ISH301','ISH304','ISH305','ISH306']
+};
+const subjekFull={
+'CTU101':'Fundamentals of Islam','ISC100':'Aqidah Islamiyah','ISC102':'Ulum Al-Quran','ISH101':'Halal Consumerism','LCC111':'English I','MAT112':'Business Math',
+'CSC134':'Computer Info','CTU152':'Values & Civilization','ISC101':'Akhlaq','ISC152':'Ulum Hadith','ISC200':'Tarikh Tasyri','ISH150':'Food Science',
+'CTU263':'Islam & Management','IMU202':'Islamic Economics','ISC151':'Usul Fiqh','ISH202':'Halal Business','ISH203':'Purification','LCC113':'English III',
+'ENT300':'Entrepreneurship','IMU102':'Fiqh Muamalat','ISC201':'Qawaid Fiqhiyah','ISH250':'Fiqh Muasarah','ISH252':'Halal Standard','ISH253':'Halal Logistics',
+'ISC251':'Dirasah Nassiyah','ISH301':'Halal Slaughtering','ISH304':'Halal Regulatory','ISH305':'Quality Assurance','ISH306':'Industrial Training'
+};
+let tahapAktif='Sem 3'; let subjekAktif='ISH202'; let tabAktif='buku';
+
+function editNama(){
+ const n=prompt("Nama VIP:",document.getElementById('namaVIP').innerText);
+ if(n) document.getElementById('namaVIP').innerText=n;
+}
+function showTab(t){
+ tabAktif=t;
+ document.getElementById('viewBuku').classList.toggle('hidden',t!=='buku');
+ document.getElementById('viewChat').classList.toggle('hidden',t!=='chat');
+ document.getElementById('btnBuku').classList.toggle('active',t==='buku');
+ document.getElementById('btnChat').classList.toggle('active',t==='chat');
+ if(t==='chat') document.getElementById('subjekChat').innerText=subjekAktif;
+}
+function renderTahap(){
+ const grid=document.getElementById('tahapGrid'); grid.innerHTML='';
+ Object.keys(dataSemester).forEach(s=>{
+  const btn=document.createElement('button');
+  btn.className='tahun-btn'+(s===tahapAktif?' active':'');
+  btn.innerText='🎒 '+s;
+  btn.onclick=()=>{tahapAktif=s; subjekAktif=dataSemester[s][0]; renderTahap(); renderSubjek(); bukaBukuTeks();};
+  grid.appendChild(btn);
+ });
+}
+function renderSubjek(){
+ const grid=document.getElementById('subjekGrid'); grid.innerHTML='';
+ const colors=['biru','pink','kuning','hijau'];
+ const icons=['📘','📗','📕','📙','💼','🧪'];
+ dataSemester[tahapAktif].forEach((kod,i)=>{
+  const box=document.createElement('div');
+  box.className='subjek-box '+colors[i%4]+(kod===subjekAktif?' active':'');
+  box.innerHTML=`<div class="subjek-icon">${icons[i%6]}</div><div class="subjek-nama">${kod}</div><div class="subjek-desc">${subjekFull[kod]||''}</div>`;
+  box.onclick=()=>{subjekAktif=kod; renderSubjek(); bukaBukuTeks(); if(tabAktif==='chat') document.getElementById('subjekChat').innerText=kod;};
+  grid.appendChild(box);
+ });
+}
+async function bukaBukuTeks(){
+ showTab('buku');
+ const box=document.getElementById('viewBuku');
+ box.innerHTML='⏳ Menjana buku teks untuk <b>'+subjekAktif+'</b>...';
+ try{
+  const res=await fetch('/api/buku-teks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subjek:subjekAktif,tahap:tahapAktif})});
+  const result=await res.json();
+  if(result.status==='success'){
+    const d=result.data;
+    box.innerHTML=`<h3 style="color:#f8d56b;margin-bottom:8px;font-size:14px">${d.tajuk}</h3><p style="white-space:pre-line">${d.kandungan}</p><div style="margin-top:14px;padding:10px;background:rgba(212,160,23,0.1);border-radius:10px;border-left:3px solid #d4a017"><b style="color:#f8d56b;font-size:11px">✍️ ${d.latihan.soalan}</b><div style="margin-top:8px">${d.latihan.pilihan.map((p,i)=>`<button onclick="if(${i}===${d.latihan.jawapan_betul}){this.style.background='#10b981'}else{this.style.background='#ef4444'};this.style.color='#fff'" style="display:block;width:100%;text-align:left;padding:8px;margin:4px 0;border-radius:8px;border:1px solid #2a4a7a;background:#0a1e3d;color:#fff;cursor:pointer;font-size:11px">${p}</button>`).join('')}</div><div style="margin-top:6px;font-size:10px;color:#94a3b8">${d.latihan.penjelasan}</div></div>`;
+  } else box.innerHTML='❌ Gagal: '+(result.message||'');
+ } catch(e){box.innerHTML='❌ Ralat sambungan: '+e.message;}
+}
+async function tanya(){
+ const input=document.getElementById('soalan'); const q=input.value.trim(); if(!q) return;
+ const box=document.getElementById('chatBox'); box.innerHTML+=`<div class="msg user">${q}</div>`; input.value=''; box.innerHTML+=`<div class="msg ai" id="load">⏳ berfikir...</div>`; box.scrollTop=box.scrollHeight;
+ try{
+  const res=await fetch('/api/tanya',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({soalan:q,subjek:subjekAktif,tahap:tahapAktif})});
+  const data=await res.json(); document.getElementById('load')?.remove();
+  box.innerHTML+=`<div class="msg ai">${(data.jawapan||'Maaf cuba lagi').replace(/\n/g,'<br>')}</div>`; box.scrollTop=box.scrollHeight;
+ } catch(e){document.getElementById('load')?.remove(); box.innerHTML+=`<div class="msg ai">❌ Ralat</div>`;}
+}
+renderTahap(); renderSubjek(); bukaBukuTeks();
+</script>
 </body>
 </html>
