@@ -8,182 +8,194 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// Root
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
+});
+
+// Health check - for UptimeRobot - DO NOT REMOVE
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        service: 'belajarai',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
 });
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 let cachedModel = null;
+let lastModelCheck = 0;
 
 async function getAvailableModel() {
-    if (cachedModel) return cachedModel;
-    
+    // Use cache for 1 hour
+    if (cachedModel && Date.now() - lastModelCheck < 3600000) {
+        return cachedModel;
+    }
     try {
-        console.log("Mencari model tersedia di Groq...");
         const res = await axios.get('https://api.groq.com/openai/v1/models', {
-            headers: { 'Authorization': `Bearer ${GROQ_API_KEY}` }
+            headers: { 'Authorization': `Bearer ${GROQ_API_KEY}` },
+            timeout: 10000
         });
-        
+
         const models = res.data.data.map(m => m.id);
-        console.log("Semua model:", models.join(', '));
-        
-        // Priority: model CHAT yang bagus
         const priority = [
             'openai/gpt-oss-120b',
             'openai/gpt-oss-20b',
-            'qwen/qwen3-8-27b',
-            'allam-2-7b'
+            'qwen/qwen3-32b',
+            'llama-3.3-70b-versatile',
+            'llama-3.1-8b-instant'
         ];
-        
-        // SKIP model audio/guard
-        const skipModels = ['whisper', 'orpheus', 'prompt-guard', 'safeguard'];
-        const chatModels = models.filter(m => 
-            !skipModels.some(skip => m.toLowerCase().includes(skip))
+
+        const skipKeywords = ['whisper', 'guard', 'tts', 'playai'];
+        const chatModels = models.filter(m =>
+           !skipKeywords.some(k => m.toLowerCase().includes(k))
         );
-        console.log("Model chat tersedia:", chatModels.join(', '));
-        
+
         for (const p of priority) {
             if (chatModels.includes(p)) {
-                console.log("Model dipilih:", p);
                 cachedModel = p;
+                lastModelCheck = Date.now();
+                console.log(`✅ Using model: ${p}`);
                 return p;
             }
         }
-        
-        if (chatModels.length > 0) {
-            console.log("Fallback ke model:", chatModels[0]);
-            cachedModel = chatModels[0];
-            return chatModels[0];
-        }
-        
-        throw new Error("Tiada model chat tersedia");
+
+        cachedModel = chatModels[0];
+        lastModelCheck = Date.now();
+        console.log(`✅ Fallback model: ${cachedModel}`);
+        return cachedModel;
+
     } catch (error) {
-        console.error("Gagal detect model:", error.message);
-        throw error;
+        console.error("Model detection failed:", error.message);
+        // Fallback to known working model
+        return cachedModel || 'llama-3.3-70b-versatile';
     }
 }
 
 async function callGroq(prompt, jsonMode = false) {
-    if (!GROQ_API_KEY) throw new Error("GROQ_API_KEY tidak dijumpai");
-    
+    if (!GROQ_API_KEY) {
+        throw new Error("GROQ_API_KEY is missing in environment");
+    }
+
     const model = await getAvailableModel();
-    
-    const body = {
+
+    const payload = {
         model: model,
         messages: [
-            { role: 'system', content: 'You are a helpful, friendly Malaysian tutor. Answer in Bahasa Melayu.' },
+            { role: 'system', content: 'You are a helpful AI tutor. Explain clearly in English. Be friendly and educational.' },
             { role: 'user', content: prompt }
         ],
         temperature: 0.7,
         max_tokens: 3000
     };
-    
-    if (jsonMode) body.response_format = { type: 'json_object' };
-    
-    const response = await axios.post(GROQ_URL, body, {
+
+    if (jsonMode) {
+        payload.response_format = { type: 'json_object' };
+    }
+
+    const response = await axios.post(GROQ_URL, payload, {
         headers: {
             'Authorization': `Bearer ${GROQ_API_KEY}`,
             'Content-Type': 'application/json'
         },
-        timeout: 90000
+        timeout: 60000
     });
-    
+
     return response.data.choices[0].message.content;
 }
 
+// API: Ask question
 app.post('/api/tanya', async (req, res) => {
     try {
         const { soalan, subjek, tahap } = req.body;
-        const prompt = `Tutor untuk ${tahap}, subjek: ${subjek}.
-        
-Soalan pelajar: "${soalan}"
+        if (!soalan) {
+            return res.status(400).json({ status: "error", message: "Question is required" });
+        }
 
-Beri jawapan DETAIL dalam Bahasa Melayu:
-- Terangkan konsep dengan jelas
-- Beri contoh relevan
-- Untuk Matematik/Sains: tunjuk langkah pengiraan
-- Tambah tip peperiksaan di akhir`;
-        
+        const prompt = `Level: ${tahap || 'General'}, Subject: ${subjek || 'General Knowledge'}
+Question: "${soalan}"
+
+Provide detailed answer in English:
+1. Clear explanation
+2. Relevant examples
+3. Step-by-step for Math/Science
+4. 2 exam tips at the end`;
+
         const jawapan = await callGroq(prompt);
         res.json({ status: "success", jawapan });
+
     } catch (error) {
-        console.error("Tanya Error:", error.message);
-        res.status(500).json({ status: "error", message: "AI sibuk. Cuba lagi." });
+        console.error("API /tanya Error:", error.response?.data || error.message);
+        res.status(500).json({ status: "error", message: "AI is busy, please try again in 10 seconds." });
     }
 });
 
+// API: Generate textbook chapter
 app.post('/api/buku-teks', async (req, res) => {
     try {
         const { subjek, tahap } = req.body;
-        console.log("Subjek:", subjek, "| Tahap:", tahap);
 
-        const prompt = `You are a Malaysian textbook author. Create ONE comprehensive chapter for level: ${tahap}, subject: ${subjek}.
+        const prompt = `Create a textbook chapter in VALID JSON for Level: ${tahap}, Subject: ${subjek}
 
-Respond in VALID JSON with this structure:
+Required JSON format:
 {
   "tajuk": "Chapter title",
-  "kandungan": "Write 4-5 DETAILED paragraphs. Include: (1) Introduction and definition, (2) Key concepts with examples, (3) Real-world applications, (4) Formulas/rules for Math/Science, (5) Summary. Bahasa Melayu. Minimum 300 words.",
-  "soalan": "Create ONE exam-style practice question",
-  "pilihan": ["Option A", "Option B", "Option C", "Option D"],
+  "kandungan": "4-5 detailed paragraphs, minimum 300 words, in English",
+  "soalan": "One exam question",
+  "pilihan": ["A", "B", "C", "D"],
   "jawapan_betul": 0,
-  "penjelasan": "Detailed explanation (2-3 sentences)."
-}
+  "penjelasan": "Explanation of correct answer"
+}`;
 
-RULES:
-- Content DETAILED (minimum 300 words)
-- Focus ONLY on subject: ${subjek}
-- Academic Bahasa Melayu
-- jawapan_betul must be index (0, 1, 2, or 3)`;
+        const raw = await callGroq(prompt, true);
+        const cleaned = raw.replace(/```json|```/g, '').trim();
+        const data = JSON.parse(cleaned);
 
-        const responseText = await callGroq(prompt, true);
-        console.log("AI Response length:", responseText.length);
-        
-        let text = responseText.trim().replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        const data = JSON.parse(text);
-        
-        if (!data.tajuk || !data.kandungan || !data.soalan) {
-            throw new Error("Data tidak lengkap");
-        }
-        
-        res.json({ 
-            status: "success", 
+        res.json({
+            status: "success",
             data: {
                 tajuk: data.tajuk,
                 kandungan: data.kandungan,
                 latihan: {
                     soalan: data.soalan,
-                    pilihan: data.pilihan || ['A', 'B', 'C', 'D'],
-                    jawapan_betul: data.jawapan_betul || 0,
-                    penjelasan: data.penjelasan || ''
+                    pilihan: data.pilihan,
+                    jawapan_betul: data.jawapan_betul,
+                    penjelasan: data.penjelasan
                 }
             }
         });
+
     } catch (error) {
-        console.error("Buku Teks Error:", error.message);
-        res.status(500).json({ status: "error", message: "Gagal jana bab. Sila cuba lagi." });
+        console.error("API /buku-teks Error:", error.message);
+        res.status(500).json({ status: "error", message: "Failed to generate chapter. Try again." });
     }
 });
 
+// API: Short notes
 app.post('/api/nota-ringkas', async (req, res) => {
     try {
         const { topik, subjek, tahap } = req.body;
-        const prompt = `Nota ringkas untuk ${tahap}, subjek ${subjek}, topik: ${topik}.
-        
-Format Bahasa Melayu:
-📌 DEFINISI
-🔑 KONSEP UTAMA (4-5 poin)
-📖 RUJUKAN
-💡 TIP PEPERIKSAAN (3 tip)`;
-        
+
+        const prompt = `Create short notes in English.
+Level: ${tahap}, Subject: ${subjek}, Topic: ${topik}
+
+Format:
+📌 DEFINITION
+🔑 KEY POINTS (5 points)
+📖 EXAMPLE
+💡 EXAM TIPS (3 tips)`;
+
         const nota = await callGroq(prompt);
         res.json({ status: "success", nota });
+
     } catch (error) {
-        console.error("Nota Error:", error.message);
-        res.status(500).json({ status: "error", message: "Gagal jana nota." });
+        console.error("API /nota-ringkas Error:", error.message);
+        res.status(500).json({ status: "error", message: "Failed to generate notes." });
     }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Server berjalan di port ' + PORT));
+app.listen(PORT, () => console.log(`✅ belajarai running on port ${PORT}`));

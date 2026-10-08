@@ -19,26 +19,35 @@
             --text-green: #10b981;
             --text-red: #ef4444;
         }
-        body { 
+        body {
             background: radial-gradient(ellipse at top, #0a1832 0%, #060d1f 60%);
-            color: var(--text-white); 
+            color: var(--text-white);
             font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
             min-height: 100vh; padding: 0 0 20px;
         }
-        .header { 
+       .header {
             text-align: center; padding: 25px 15px 15px;
             background: linear-gradient(180deg, rgba(10,24,50,0.9), transparent);
             border-bottom: 1px solid var(--border-blue);
             position: relative; overflow: hidden;
         }
-        .header::before {
+       .header::before {
             content: ''; position: absolute; top: -50%; left: 50%;
             transform: translateX(-50%); width: 300px; height: 300px;
             background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%);
             pointer-events: none;
         }
-        .header h1 { 
-            font-size: 24px; font-weight: 900; 
+       .header.logo {
+            width: 85px; height: 85px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-light);
+            box-shadow: 0 0 20px rgba(96,165,250,0.6);
+            margin-bottom: 10px;
+            position: relative; z-index: 1;
+        }
+       .header h1 {
+            font-size: 24px; font-weight: 900;
             background: linear-gradient(90deg, #60a5fa, #fbbf24, #60a5fa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -46,165 +55,49 @@
             letter-spacing: 2px;
             position: relative; z-index: 1;
         }
-        .header p { 
-            color: var(--text-gray); font-size: 11px; 
+       .header p {
+            color: var(--text-gray); font-size: 11px;
             margin-top: 6px; letter-spacing: 3px; text-transform: uppercase;
             position: relative; z-index: 1;
         }
-        .tabs { 
-            display: flex; gap: 8px; padding: 0 15px; 
-            margin: 15px auto; max-width: 800px;
-        }
-        .tab-btn { 
-            flex: 1; padding: 14px; border-radius: 12px; border: 1px solid var(--border-blue);
-            cursor: pointer; font-weight: 800; font-size: 12px; 
-            background: linear-gradient(135deg, rgba(15,36,71,0.8), rgba(10,24,50,0.8));
-            color: var(--text-gray); transition: all 0.3s; letter-spacing: 1px;
-        }
-        .tab-btn.active { 
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            color: #fff; border-color: var(--accent-light);
-            box-shadow: 0 0 25px rgba(59,130,246,0.5);
-        }
-        .container { padding: 15px; max-width: 800px; margin: 0 auto; }
-        .section-label { 
-            font-size: 10px; color: var(--accent-light); font-weight: 900; 
-            letter-spacing: 3px; text-transform: uppercase; 
-            margin: 18px 0 10px; display: flex; align-items: center; gap: 8px;
-        }
-        .section-label::after {
-            content: ''; flex: 1; height: 1px;
-            background: linear-gradient(90deg, var(--border-blue), transparent);
-        }
-        .tahap-grid { 
-            display: grid; grid-template-columns: repeat(5, 1fr); 
-            gap: 6px; margin-bottom: 15px;
-        }
-        .tahap-btn { 
-            padding: 12px 4px; border-radius: 10px; 
-            border: 1px solid var(--border-blue); 
-            font-size: 11px; font-weight: 800; cursor: pointer; 
-            background: linear-gradient(135deg, rgba(15,36,71,0.5), rgba(10,24,50,0.5));
-            color: var(--text-gray); transition: all 0.2s;
-        }
-        .tahap-btn:hover { border-color: var(--accent-blue); color: #fff; }
-        .tahap-btn.active { 
-            border-color: var(--accent-light); 
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: #fff; box-shadow: 0 0 15px rgba(59,130,246,0.5);
-        }
-        .subjek-grid { 
-            display: grid; grid-template-columns: 1fr; 
-            gap: 6px; margin-bottom: 15px; 
-        }
-        .subjek-btn { 
-            padding: 14px 16px; border-radius: 10px; 
-            border: 1px solid var(--border-blue); 
-            font-size: 12px; font-weight: 700; cursor: pointer; 
-            background: linear-gradient(135deg, rgba(15,36,71,0.6), rgba(10,24,50,0.6));
-            color: var(--text-gray); text-align: left; transition: all 0.2s;
-        }
-        .subjek-btn:hover { border-color: var(--accent-blue); color: #fff; }
-        .subjek-btn.active { 
-            background: linear-gradient(135deg, #1e40af, #2563eb);
-            border-color: var(--accent-light); color: #fff;
-            box-shadow: 0 0 15px rgba(59,130,246,0.4);
-        }
-        .subjek-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .content-box { 
-            background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9));
-            border: 1px solid var(--border-blue);
-            border-radius: 18px; padding: 22px; margin-bottom: 15px; 
-            min-height: 250px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-        }
-        .buku-teks h2 { 
-            font-size: 18px; color: var(--accent-gold); 
-            margin-bottom: 15px; padding-bottom: 12px; 
-            border-bottom: 1px solid var(--border-blue);
-        }
-        .buku-teks p { 
-            font-size: 14px; line-height: 1.9; 
-            color: #cbd5e1; margin-bottom: 15px; text-align: justify;
-        }
-        .latihan-box { 
-            margin-top: 25px; padding: 18px; 
-            background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(30,64,175,0.05));
-            border-radius: 14px; border-left: 3px solid var(--accent-gold);
-        }
-        .latihan-box h3 { 
-            font-size: 13px; color: var(--accent-gold); 
-            margin-bottom: 12px; letter-spacing: 2px;
-        }
-        .mcq-option { 
-            display: block; width: 100%; padding: 14px 16px; 
-            margin-bottom: 8px; border-radius: 10px; 
-            border: 1px solid var(--border-blue); 
-            background: rgba(15,36,71,0.5); color: #fff; 
-            font-size: 13px; text-align: left; cursor: pointer; font-weight: 600;
-            transition: all 0.2s;
-        }
-        .mcq-option:hover { 
-            border-color: var(--accent-blue); 
-            background: rgba(59,130,246,0.15);
-        }
-        .mcq-option.correct { 
-            background: linear-gradient(135deg, #059669, #10b981);
-            color: #fff; border-color: var(--text-green);
-        }
-        .mcq-option.wrong { 
-            background: linear-gradient(135deg, #991b1b, #ef4444);
-            color: #fff; border-color: var(--text-red);
-        }
-        .mcq-option:disabled { cursor: not-allowed; }
-        .chat-box { 
-            background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9));
-            border: 1px solid var(--border-blue);
-            border-radius: 18px; padding: 18px; margin-bottom: 15px; 
-            min-height: 200px; max-height: 400px; overflow-y: auto;
-        }
-        .msg { margin-bottom: 10px; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7; }
-        .msg.user { 
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            margin-left: 30px; text-align: right;
-        }
-        .msg.ai { 
-            background: rgba(15,36,71,0.6); 
-            border-left: 3px solid var(--accent-light);
-            color: #e2e8f0;
-        }
-        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .input-row input { 
-            flex: 1; padding: 15px 20px; border-radius: 25px; 
-            border: 1px solid var(--border-blue); 
-            background: rgba(15,36,71,0.6); color: #fff; 
-            outline: none; font-size: 13px;
-        }
-        .input-row input:focus { border-color: var(--accent-light); }
-        .input-row input::placeholder { color: #64748b; }
-        .btn-hantar { 
-            padding: 15px 26px; border-radius: 25px; border: none; 
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            color: #fff; font-weight: 900; cursor: pointer;
-            letter-spacing: 1px;
-        }
-        .hidden { display: none; }
-        .loading-box { text-align: center; padding: 60px 20px; }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(59,130,246,0.2);
-            border-top: 4px solid var(--accent-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+        /*... rest sama... */
+       .tabs { display: flex; gap: 8px; padding: 0 15px; margin: 15px auto; max-width: 800px; }
+       .tab-btn { flex: 1; padding: 14px; border-radius: 12px; border: 1px solid var(--border-blue); cursor: pointer; font-weight: 800; font-size: 12px; background: linear-gradient(135deg, rgba(15,36,71,0.8), rgba(10,24,50,0.8)); color: var(--text-gray); transition: all 0.3s; letter-spacing: 1px; }
+       .tab-btn.active { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; border-color: var(--accent-light); box-shadow: 0 0 25px rgba(59,130,246,0.5); }
+       .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+       .section-label { font-size: 10px; color: var(--accent-light); font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin: 18px 0 10px; display: flex; align-items: center; gap: 8px; }
+       .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-blue), transparent); }
+       .tahap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 15px; }
+       .tahap-btn { padding: 12px 4px; border-radius: 10px; border: 1px solid var(--border-blue); font-size: 11px; font-weight: 800; cursor: pointer; background: linear-gradient(135deg, rgba(15,36,71,0.5), rgba(10,24,50,0.5)); color: var(--text-gray); transition: all 0.2s; }
+       .tahap-btn.active { border-color: var(--accent-light); background: linear-gradient(135deg, #1e40af, #3b82f6); color: #fff; box-shadow: 0 0 15px rgba(59,130,246,0.5); }
+       .subjek-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 15px; }
+       .subjek-btn { padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border-blue); font-size: 12px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, rgba(15,36,71,0.6), rgba(10,24,50,0.6)); color: var(--text-gray); text-align: left; }
+       .subjek-btn.active { background: linear-gradient(135deg, #1e40af, #2563eb); border-color: var(--accent-light); color: #fff; }
+       .content-box { background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9)); border: 1px solid var(--border-blue); border-radius: 18px; padding: 22px; margin-bottom: 15px; min-height: 250px; box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+       .buku-teks h2 { font-size: 18px; color: var(--accent-gold); margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid var(--border-blue); }
+       .buku-teks p { font-size: 14px; line-height: 1.9; color: #cbd5e1; margin-bottom: 15px; text-align: justify; }
+       .latihan-box { margin-top: 25px; padding: 18px; background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(30,64,175,0.05)); border-radius: 14px; border-left: 3px solid var(--accent-gold); }
+       .mcq-option { display: block; width: 100%; padding: 14px 16px; margin-bottom: 8px; border-radius: 10px; border: 1px solid var(--border-blue); background: rgba(15,36,71,0.5); color: #fff; font-size: 13px; text-align: left; cursor: pointer; }
+       .mcq-option.correct { background: linear-gradient(135deg, #059669, #10b981); }
+       .mcq-option.wrong { background: linear-gradient(135deg, #991b1b, #ef4444); }
+       .chat-box { background: linear-gradient(135deg, rgba(15,36,71,0.7), rgba(10,24,50,0.9)); border: 1px solid var(--border-blue); border-radius: 18px; padding: 18px; margin-bottom: 15px; min-height: 200px; max-height: 400px; overflow-y: auto; }
+       .msg { margin-bottom: 10px; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7; }
+       .msg.user { background: linear-gradient(135deg, #1e40af, #3b82f6); margin-left: 30px; text-align: right; }
+       .msg.ai { background: rgba(15,36,71,0.6); border-left: 3px solid var(--accent-light); color: #e2e8f0; }
+       .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+       .input-row input { flex: 1; padding: 15px 20px; border-radius: 25px; border: 1px solid var(--border-blue); background: rgba(15,36,71,0.6); color: #fff; outline: none; font-size: 13px; }
+       .btn-hantar { padding: 15px 26px; border-radius: 25px; border: none; background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; font-weight: 900; cursor: pointer; }
+       .hidden { display: none; }
+       .loading-box { text-align: center; padding: 60px 20px; }
+       .spinner { width: 50px; height: 50px; border: 4px solid rgba(59,130,246,0.2); border-top: 4px solid var(--accent-blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { color: var(--accent-light); font-weight: 700; font-size: 14px; }
-        .error-text { color: var(--text-red); font-weight: 700; font-size: 14px; text-align: center; padding: 30px; }
+       .loading-text { color: var(--accent-light); font-weight: 700; font-size: 14px; }
+       .error-text { color: var(--text-red); font-weight: 700; font-size: 14px; text-align: center; padding: 30px; }
     </style>
 </head>
 <body>
     <div class="header">
+        <img src="logo.png" alt="Logo" class="logo">
         <h1>BELAJAR AI</h1>
         <p>Diploma Pengurusan Halal</p>
     </div>
@@ -217,17 +110,14 @@
     <div class="container">
         <p class="section-label">📅 Pilih Semester</p>
         <div class="tahap-grid" id="tahapGrid"></div>
-
         <p class="section-label">📚 Pilih Subjek</p>
         <div class="subjek-grid" id="subjekGrid"></div>
-
         <div id="viewBuku" class="content-box">
             <div class="loading-box">
                 <div class="spinner"></div>
                 <p class="loading-text">Sila pilih subjek untuk membuka buku teks...</p>
             </div>
         </div>
-
         <div id="viewChat" class="hidden">
             <div class="chat-box" id="chatBox">
                 <div class="msg ai">👋 Assalamualaikum! Tanya apa-apa soalan tentang subjek yang dipilih.</div>
@@ -240,7 +130,6 @@
     </div>
 
     <script>
-        // FOKUS: Diploma Pengurusan Halal (UiTM IC120) SAHAJA
         const dataSemester = {
             'Sem 1': ['CTU101: Fundamentals of Islam', 'ISC100: Aqidah Islamiyah', 'ISC102: Ulum Al-Quran', 'ISH101: Introduction to Halal Consumerism', 'LCC111: English I', 'MAT112: Business Mathematics'],
             'Sem 2': ['CSC134: Computer and Info Processing', 'CTU152: Values and Civilization', 'ISC101: Akhlaq Islamiyah', 'ISC152: Ulum Al-Hadith', 'ISC200: Tarikh Tasyri\'', 'ISH150: Principle of Food Science'],
@@ -248,126 +137,65 @@
             'Sem 4': ['ENT300: Entrepreneurship', 'IMU102: Fiqh Muamalat', 'ISC201: Qawaid Fiqhiyah', 'ISH250: Fiqh Mu\'asarah', 'ISH252: Halal Standard and Certification', 'ISH253: Halal Logistics Management'],
             'Sem 5': ['ISC251: Dirasah An-Nassiyah', 'ISH301: Halal Slaughtering', 'ISH304: Halal Regulatory and Governance', 'ISH305: Halal Quality and Assurance', 'ISH306: Industrial Training']
         };
-
         let tahapAktif = 'Sem 3';
         let subjekAktif = 'ISH202: Halal Business and Marketing';
         let mcqData = null;
         let tabAktif = 'buku';
         let isLoading = false;
-
         function renderTahap() {
             const grid = document.getElementById('tahapGrid');
             grid.innerHTML = '';
             Object.keys(dataSemester).forEach(s => {
                 const btn = document.createElement('button');
-                btn.className = 'tahap-btn' + (s === tahapAktif ? ' active' : '');
+                btn.className = 'tahap-btn' + (s === tahapAktif? ' active' : '');
                 btn.innerText = s;
-                btn.onclick = () => { 
-                    if (isLoading) return;
-                    tahapAktif = s; 
-                    subjekAktif = dataSemester[s][0]; 
-                    renderTahap(); 
-                    renderSubjek(); 
-                    if (tabAktif === 'buku') bukaBukuTeks();
-                };
+                btn.onclick = () => { if (isLoading) return; tahapAktif = s; subjekAktif = dataSemester[s][0]; renderTahap(); renderSubjek(); if (tabAktif === 'buku') bukaBukuTeks(); };
                 grid.appendChild(btn);
             });
         }
-
         function renderSubjek() {
             const grid = document.getElementById('subjekGrid');
             grid.innerHTML = '';
             dataSemester[tahapAktif].forEach(s => {
                 const btn = document.createElement('button');
-                btn.className = 'subjek-btn' + (s === subjekAktif ? ' active' : '');
+                btn.className = 'subjek-btn' + (s === subjekAktif? ' active' : '');
                 btn.innerText = s;
-                btn.onclick = () => { 
-                    if (isLoading) return;
-                    subjekAktif = s; 
-                    renderSubjek(); 
-                    if (tabAktif === 'buku') bukaBukuTeks();
-                };
+                btn.onclick = () => { if (isLoading) return; subjekAktif = s; renderSubjek(); if (tabAktif === 'buku') bukaBukuTeks(); };
                 grid.appendChild(btn);
             });
         }
-
         function switchTab(tab) {
             tabAktif = tab;
             document.getElementById('tabBuku').classList.toggle('active', tab === 'buku');
             document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
-            document.getElementById('viewBuku').classList.toggle('hidden', tab !== 'buku');
-            document.getElementById('viewChat').classList.toggle('hidden', tab !== 'chat');
+            document.getElementById('viewBuku').classList.toggle('hidden', tab!== 'buku');
+            document.getElementById('viewChat').classList.toggle('hidden', tab!== 'chat');
             if (tab === 'buku' && subjekAktif) bukaBukuTeks();
         }
-
         async function bukaBukuTeks() {
             if (isLoading) return;
             isLoading = true;
-            
             const box = document.getElementById('viewBuku');
-            box.innerHTML = `
-                <div class="loading-box">
-                    <div class="spinner"></div>
-                    <p class="loading-text">⏳ Menjana buku teks untuk <b>${subjekAktif}</b>...</p>
-                </div>
-            `;
-            
+            box.innerHTML = `<div class="loading-box"><div class="spinner"></div><p class="loading-text">⏳ Menjana buku teks untuk <b>${subjekAktif}</b>...</p></div>`;
             document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = true);
             document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = true);
-
             try {
-                const res = await fetch('/api/buku-teks', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ subjek: subjekAktif, tahap: tahapAktif })
-                });
+                const res = await fetch('/api/buku-teks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ subjek: subjekAktif, tahap: tahapAktif }) });
                 const result = await res.json();
-                
                 if (result.status === 'success') {
                     const d = result.data;
                     mcqData = d.latihan;
-                    
-                    box.innerHTML = `
-                        <div class="buku-teks">
-                            <h2>${d.tajuk}</h2>
-                            <p>${d.kandungan.replace(/\n/g, '<br><br>')}</p>
-                            <div class="latihan-box">
-                                <h3>✍️ LATIHAN</h3>
-                                <p style="font-size: 14px; margin-bottom: 12px; color: #e2e8f0;">${d.latihan.soalan}</p>
-                                <div id="mcqContainer">
-                                    ${d.latihan.pilihan.map((p, i) => `
-                                        <button class="mcq-option" onclick="jawabLatihan(${i}, this)">${p}</button>
-                                    `).join('')}
-                                </div>
-                                <div id="feedback" style="margin-top: 12px; font-size: 13px; font-weight: bold;"></div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    box.innerHTML = `<div class="error-text">❌ ${result.message || 'Gagal memuatkan buku teks.'}</div>`;
-                }
-            } catch (e) {
-                box.innerHTML = '<div class="error-text">❌ Ralat sambungan. Sila cuba lagi.</div>';
-            } finally {
-                isLoading = false;
-                document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = false);
-                document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = false);
-            }
+                    box.innerHTML = `<div class="buku-teks"><h2>${d.tajuk}</h2><p>${d.kandungan.replace(/\n/g, '<br><br>')}</p><div class="latihan-box"><h3>✍️ LATIHAN</h3><p style="font-size: 14px; margin-bottom: 12px; color: #e2e8f0;">${d.latihan.soalan}</p><div id="mcqContainer">${d.latihan.pilihan.map((p, i) => `<button class="mcq-option" onclick="jawabLatihan(${i}, this)">${p}</button>`).join('')}</div><div id="feedback" style="margin-top: 12px; font-size: 13px; font-weight: bold;"></div></div></div>`;
+                } else { box.innerHTML = `<div class="error-text">❌ ${result.message || 'Gagal memuatkan buku teks.'}</div>`; }
+            } catch (e) { box.innerHTML = '<div class="error-text">❌ Ralat sambungan. Sila cuba lagi.</div>'; }
+            finally { isLoading = false; document.querySelectorAll('.subjek-btn').forEach(b => b.disabled = false); document.querySelectorAll('.tahap-btn').forEach(b => b.disabled = false); }
         }
-
         function jawabLatihan(index, btn) {
             const semuaBtn = document.querySelectorAll('.mcq-option');
             semuaBtn.forEach(b => b.disabled = true);
-            if (index === mcqData.jawapan_betul) {
-                btn.classList.add('correct');
-                document.getElementById('feedback').innerHTML = '<span style="color:#10b981;">✅ Betul! ' + mcqData.penjelasan + '</span>';
-            } else {
-                btn.classList.add('wrong');
-                semuaBtn[mcqData.jawapan_betul].classList.add('correct');
-                document.getElementById('feedback').innerHTML = '<span style="color:#ef4444;">❌ Salah. ' + mcqData.penjelasan + '</span>';
-            }
+            if (index === mcqData.jawapan_betul) { btn.classList.add('correct'); document.getElementById('feedback').innerHTML = '<span style="color:#10b981;">✅ Betul! ' + mcqData.penjelasan + '</span>'; }
+            else { btn.classList.add('wrong'); semuaBtn[mcqData.jawapan_betul].classList.add('correct'); document.getElementById('feedback').innerHTML = '<span style="color:#ef4444;">❌ Salah. ' + mcqData.penjelasan + '</span>'; }
         }
-
         async function tanya() {
             const input = document.getElementById('soalan');
             const soalan = input.value.trim();
@@ -377,26 +205,16 @@
             input.value = '';
             box.innerHTML += `<div class="msg ai" id="loading">⏳ AI sedang berfikir...</div>`;
             box.scrollTop = box.scrollHeight;
-
             try {
-                const res = await fetch('/api/tanya', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ soalan, subjek: subjekAktif, tahap: tahapAktif })
-                });
+                const res = await fetch('/api/tanya', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ soalan, subjek: subjekAktif, tahap: tahapAktif }) });
                 const data = await res.json();
                 document.getElementById('loading').remove();
                 if (data.status === 'success') box.innerHTML += `<div class="msg ai">${data.jawapan}</div>`;
                 else box.innerHTML += `<div class="msg ai">❌ Maaf, cuba lagi.</div>`;
-            } catch (e) {
-                document.getElementById('loading').remove();
-                box.innerHTML += `<div class="msg ai">❌ Ralat sambungan.</div>`;
-            }
+            } catch (e) { document.getElementById('loading').remove(); box.innerHTML += `<div class="msg ai">❌ Ralat sambungan.</div>`; }
             box.scrollTop = box.scrollHeight;
         }
-
-        renderTahap();
-        renderSubjek();
+        renderTahap(); renderSubjek();
     </script>
 </body>
 </html>
