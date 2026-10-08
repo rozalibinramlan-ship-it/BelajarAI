@@ -17,8 +17,15 @@ app.use(express.static(__dirname));
 
 // ===== CONFIG =====
 const GROQ_KEY = process.env.GROQ_API_KEY;
-const MODEL = "llama-3.1-8b-instant";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+// Model list with fallback (in priority order)
+const MODELS = [
+  "llama-3.3-70b-versatile",
+  "meta-llama/llama-4-scout-17b-16e-instruct",
+  "openai/gpt-oss-20b",
+  "qwen/qwen3-32b"
+];
 
 // ===== SYSTEM PROMPT =====
 const SYSTEM_PROMPT = `You are an experienced lecturer for the Diploma in Halal Management at UiTM (Universiti Teknologi MARA), Malaysia.
@@ -27,7 +34,7 @@ const SYSTEM_PROMPT = `You are an experienced lecturer for the Diploma in Halal 
 - Relate examples to the Malaysian halal industry when relevant.
 - Use proper academic tone but stay friendly and easy to understand.`;
 
-// ===== GROQ API CALL =====
+// ===== GROQ API CALL (with auto-fallback) =====
 async function callGroq(userPrompt, options = {}) {
   if (!GROQ_KEY) {
     throw new Error("GROQ_API_KEY is missing. Set it in your .env or Railway Variables.");
@@ -39,43 +46,69 @@ async function callGroq(userPrompt, options = {}) {
     jsonMode = false
   } = options;
 
-  const body = {
-    model: MODEL,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: userPrompt }
-    ],
-    temperature,
-    max_tokens
-  };
+  let lastError = null;
 
-  // Groq supports JSON mode via response_format
-  if (jsonMode) {
-    body.response_format = { type: "json_object" };
+  for (const model of MODELS) {
+    try {
+      const body = {
+        model,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt }
+        ],
+        temperature,
+        max_tokens
+      };
+
+      if (jsonMode) {
+        body.response_format = { type: "json_object" };
+      }
+
+      const res = await fetch(GROQ_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${GROQ_KEY}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        const msg = data?.error?.message || JSON.stringify(data).slice(0, 300);
+
+        if (
+          msg.includes("does not exist") ||
+          msg.includes("do not have access") ||
+          msg.includes("decommissioned") ||
+          msg.includes("not found")
+        ) {
+          console.warn(`[Groq] Model "${model}" unavailable, trying next...`);
+          lastError = new Error(msg);
+          continue;
+        }
+
+        throw new Error(`Groq API error (${model}): ${msg}`);
+      }
+
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content) {
+        lastError = new Error(`Empty response from ${model}`);
+        continue;
+      }
+
+      console.log(`[Groq] ✅ Success using model: ${model}`);
+      return content;
+
+    } catch (e) {
+      lastError = e;
+      console.warn(`[Groq] ❌ Failed with ${model}: ${e.message}`);
+      continue;
+    }
   }
 
-  const res = await fetch(GROQ_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${GROQ_KEY}`
-    },
-    body: JSON.stringify(body)
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    const msg = data?.error?.message || JSON.stringify(data).slice(0, 300);
-    throw new Error(`Groq API error: ${msg}`);
-  }
-
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error("Groq returned an empty response.");
-  }
-
-  return content;
+  throw new Error(`All models failed. Last error: ${lastError?.message}`);
 }
 
 // ===== HEALTH CHECKS =====
@@ -85,7 +118,8 @@ app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
     groq_configured: !!GROQ_KEY,
-    model: MODEL,
+    models: MODELS,
+    primary_model: MODELS[0],
     timestamp: new Date().toISOString()
   });
 });
@@ -133,7 +167,6 @@ Requirements:
 
     const raw = await callGroq(prompt, { jsonMode: true, temperature: 0.7 });
 
-    // Robust JSON extraction
     const cleaned = raw.replace(/```json|```/g, "").trim();
     const start = cleaned.indexOf("{");
     const end = cleaned.lastIndexOf("}");
@@ -144,7 +177,6 @@ Requirements:
 
     const parsed = JSON.parse(cleaned.slice(start, end + 1));
 
-    // Validate structure
     if (!parsed.tajuk || !parsed.kandungan || !parsed.latihan) {
       throw new Error("AI response is missing required fields.");
     }
@@ -195,6 +227,7 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("════════════════════════════════════════════");
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`✅ Groq API Key: ${GROQ_KEY ? "CONFIGURED" : "MISSING ⚠️"}`);
-  console.log(`✅ Model: ${MODEL}`);
+  console.log(`✅ Primary model: ${MODELS[0]}`);
+  console.log(`✅ Fallback models: ${MODELS.slice(1).join(", ")}`);
   console.log("════════════════════════════════════════════");
 });
