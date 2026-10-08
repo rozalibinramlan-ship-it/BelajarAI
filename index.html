@@ -1,104 +1,637 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Belajar AI Halal</title>
+<title>Diploma in Halal Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#14171c;display:flex;justify-content:center;padding:12px;font-family:'Inter',-apple-system,sans-serif;min-height:100vh}
-.app{width:100%;max-width:410px;background:#23272f;border:1px solid #3a3f4a;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-.header{background:linear-gradient(180deg,#2e333d 0%,#23272f 100%);padding:18px 18px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #3a3f4a}
-.logo-wrap{width:52px;height:52px;border-radius:50%;border:2px solid #c9a86a;padding:2px;background:#1a1d23;flex-shrink:0}
-.logo-wrap img{width:100%;height:100%;border-radius:50%;object-fit:cover;filter:grayscale(0.2) sepia(0.3) brightness(1.1)}
-.header-text{flex:1}
-.header-text h1{color:#e8dcc6;font-size:17px;font-weight:800;letter-spacing:1.5px}
-.header-text p{color:#8b8f98;font-size:10px;letter-spacing:2px;margin-top:2px}
-.gold-dot{width:8px;height:8px;background:#c9a86a;border-radius:50%;box-shadow:0 0 10px #c9a86a}
-.content{padding:14px}
-.profile-row{background:#2a2f39;border:1px solid #3a3f4a;border-radius:16px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.profile-left{display:flex;align-items:center;gap:10px}
-.profile-icon{width:36px;height:36px;background:linear-gradient(135deg,#c9a86a,#8c6a3a);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.profile-name{color:#e8dcc6;font-weight:700;font-size:13px}
-.profile-sub{color:#6b707a;font-size:10px}
-.btn-edit-small{width:32px;height:32px;background:#2e333d;border:1px solid #3a3f4a;border-radius:9px;color:#8b8f98;cursor:pointer}
-.label{color:#8b8f98;font-size:9px;letter-spacing:2px;font-weight:700;margin:16px 0 8px}
-.sem-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-.sem-btn{padding:10px 6px;background:#2a2f39;border:1px solid #3a3f4a;border-radius:12px;color:#8b8f98;font-size:11px;font-weight:700;cursor:pointer;transition:0.2s}
-.sem-btn.active{background:linear-gradient(135deg,#c9a86a,#a8824a);color:#1a1200;border-color:#c9a86a;box-shadow:0 4px 15px rgba(201,168,106,0.3)}
-.subjek-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.subjek-card{background:#2a2f39;border:1px solid #3a3f4a;border-radius:14px;padding:12px 10px;cursor:pointer;transition:0.2s;position:relative;overflow:hidden}
-.subjek-card:before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--accent)}
-.subjek-card.biru{--accent:#5b8def}
-.subjek-card.amber{--accent:#c9a86a}
-.subjek-card.emerald{--accent:#34d399}
-.subjek-card.rose{--accent:#fb7185}
-.subjek-card:hover{transform:translateY(-2px);border-color:var(--accent)}
-.subjek-card.active{border-color:var(--accent);background:#323845;box-shadow:0 0 20px rgba(0,0,0,0.3)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f1115;
+  --surface:#171a21;
+  --surface-2:#1e222b;
+  --border:#2a2f3a;
+  --border-soft:#232833;
+  --gold:#d4af6a;
+  --gold-2:#b8935a;
+  --gold-glow:rgba(212,175,106,0.35);
+  --emerald:#4ade80;
+  --rose:#f87171;
+  --text:#ece4d3;
+  --text-dim:#8a8f9c;
+  --text-faint:#5a6070;
+}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #1c2029 0%, transparent 60%),
+    radial-gradient(800px 400px at 100% 100%, #1a1d24 0%, transparent 60%),
+    var(--bg);
+  display:flex;justify-content:center;align-items:flex-start;
+  padding:16px 12px 40px;
+  font-family:'Inter',-apple-system,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ====== APP SHELL ====== */
+.app{
+  width:100%;max-width:420px;
+  background:linear-gradient(180deg,var(--surface) 0%, #14171d 100%);
+  border:1px solid var(--border);
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(212,175,106,0.04) inset,
+    0 1px 0 rgba(255,255,255,0.04) inset;
+  position:relative;
+  animation:rise 0.6s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.app::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0.6;
+}
+
+/* ====== HEADER ====== */
+.header{
+  padding:20px 20px 16px;
+  display:flex;align-items:center;gap:14px;
+  border-bottom:1px solid var(--border-soft);
+  background:linear-gradient(180deg,rgba(212,175,106,0.04),transparent);
+  position:relative;
+}
+
+.logo{
+  width:44px;height:44px;flex-shrink:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2a2f3a,#171a21);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,175,106,0.15) inset;
+}
+.logo::after{
+  content:'';position:absolute;inset:-1px;border-radius:15px;
+  background:linear-gradient(135deg,var(--gold),transparent 40%,transparent 60%,var(--gold-2));
+  opacity:0.5;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  padding:1px;
+  pointer-events:none;
+}
+.logo img{
+  width:26px;height:26px;object-fit:contain;
+  filter:drop-shadow(0 0 4px var(--gold-glow));
+}
+.logo .fallback{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:800;
+  color:var(--gold);
+  letter-spacing:-1px;
+}
+
+.header-text{flex:1;min-width:0}
+.header-text h1{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:800;
+  color:var(--text);
+  letter-spacing:0.3px;
+  line-height:1.15;
+}
+.header-text p{
+  color:var(--text-faint);
+  font-size:9px;letter-spacing:2px;font-weight:600;
+  margin-top:3px;text-transform:uppercase;
+}
+
+.status-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:20px;
+  background:rgba(74,222,128,0.08);
+  border:1px solid rgba(74,222,128,0.25);
+  font-size:9px;font-weight:700;color:var(--emerald);
+  letter-spacing:0.5px;
+}
+.status-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--emerald);
+  box-shadow:0 0 8px var(--emerald);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+@media (max-width:380px){ .status-pill{display:none} }
+
+/* ====== CONTENT ====== */
+.content{padding:16px 16px 20px}
+
+/* ====== PROFILE ====== */
+.profile-row{
+  background:linear-gradient(135deg,var(--surface-2),#1a1e26);
+  border:1px solid var(--border-soft);
+  border-radius:18px;
+  padding:12px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.profile-row::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--gold),transparent);
+}
+.profile-left{display:flex;align-items:center;gap:12px}
+.profile-icon{
+  width:40px;height:40px;
+  background:linear-gradient(135deg,#2a2f3a,#1a1d24);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(212,175,106,0.1) inset;
+}
+.profile-name{color:var(--text);font-weight:700;font-size:13.5px;letter-spacing:0.2px}
+.profile-sub{color:var(--text-faint);font-size:10px;margin-top:2px;letter-spacing:0.5px}
+.btn-edit-small{
+  width:34px;height:34px;
+  background:rgba(212,175,106,0.06);
+  border:1px solid rgba(212,175,106,0.2);
+  border-radius:10px;
+  color:var(--gold);
+  cursor:pointer;
+  font-size:13px;
+  transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.btn-edit-small:hover{background:rgba(212,175,106,0.15);transform:scale(1.05)}
+.btn-edit-small:active{transform:scale(0.95)}
+
+/* ====== LABEL ====== */
+.label{
+  display:flex;align-items:center;gap:8px;
+  color:var(--text-faint);
+  font-size:9.5px;letter-spacing:2.5px;font-weight:700;
+  margin:20px 0 10px;
+  text-transform:uppercase;
+}
+.label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border),transparent);
+}
+
+/* ====== SEMESTER ====== */
+.sem-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sem-btn{
+  padding:9px 4px;
+  background:var(--surface-2);
+  border:1px solid var(--border-soft);
+  border-radius:11px;
+  color:var(--text-dim);
+  font-size:10.5px;font-weight:700;
+  cursor:pointer;
+  transition:all 0.2s cubic-bezier(.2,.8,.2,1);
+  font-family:inherit;
+  letter-spacing:0.3px;
+}
+.sem-btn:hover{border-color:var(--border);color:var(--text);transform:translateY(-1px)}
+.sem-btn.active{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-2) 100%);
+  color:#1a1200;
+  border-color:var(--gold);
+  box-shadow:0 6px 18px -4px var(--gold-glow), 0 0 0 1px rgba(255,255,255,0.1) inset;
+  transform:translateY(-1px);
+}
+
+/* ====== SUBJECTS ====== */
+.subjek-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.subjek-card{
+  background:linear-gradient(160deg,var(--surface-2) 0%, #191c24 100%);
+  border:1px solid var(--border-soft);
+  border-radius:15px;
+  padding:13px 12px 12px;
+  cursor:pointer;
+  transition:all 0.25s cubic-bezier(.2,.8,.2,1);
+  position:relative;overflow:hidden;
+}
+.subjek-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent);
+  opacity:0.85;
+}
+.subjek-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(120px 60px at top left, var(--accent-soft), transparent 70%);
+  opacity:0;transition:opacity 0.3s;
+  pointer-events:none;
+}
+.subjek-card:hover{transform:translateY(-3px);border-color:var(--border);box-shadow:0 10px 24px -10px rgba(0,0,0,0.6)}
+.subjek-card:hover::after{opacity:1}
+.subjek-card.active{
+  border-color:var(--accent);
+  background:linear-gradient(160deg,#20242e, #191c24);
+  box-shadow:0 0 0 1px var(--accent), 0 12px 28px -12px var(--accent-soft);
+}
+.subjek-card.gold{--accent:var(--gold);--accent-soft:rgba(212,175,106,0.18)}
+.subjek-card.emerald{--accent:var(--emerald);--accent-soft:rgba(74,222,128,0.15)}
+.subjek-card.rose{--accent:#fb7185;--accent-soft:rgba(251,113,133,0.15)}
+.subjek-card.sand{--accent:#e4c48a;--accent-soft:rgba(228,196,138,0.15)}
+
 .subjek-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.subjek-code{font-size:11px;font-weight:800;color:#e8dcc6}
-.subjek-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.subjek-name{font-size:9px;color:#8b8f98;line-height:1.3}
-.view{background:#1e222a;border:1px solid #3a3f4a;border-radius:16px;padding:14px;margin-top:14px;min-height:200px;color:#a1a6b0;font-size:12px;line-height:1.7}
-.tabs{display:flex;background:#1e222a;border:1px solid #3a3f4a;border-radius:12px;padding:4px;margin-top:14px;gap:4px}
-.tab{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:#6b707a;font-size:11px;font-weight:700;cursor:pointer}
-.tab.active{background:#c9a86a;color:#1a1200}
-.chat-box{max-height:260px;overflow-y:auto;margin-bottom:10px}
-.msg{padding:9px 12px;border-radius:12px;margin-bottom:8px;font-size:11px;line-height:1.5}
-.msg.ai{background:#2a2f39;border:1px solid #3a3f4a}
-.msg.user{background:#c9a86a;color:#1a1200;margin-left:20px;text-align:right}
+.subjek-code{
+  font-size:11.5px;font-weight:800;
+  color:var(--text);letter-spacing:0.5px;
+}
+.subjek-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+}
+.subjek-name{
+  font-size:9.5px;color:var(--text-dim);
+  line-height:1.35;letter-spacing:0.2px;
+}
+
+/* ====== TABS ====== */
+.tabs{
+  display:flex;
+  background:var(--surface-2);
+  border:1px solid var(--border-soft);
+  border-radius:14px;
+  padding:4px;gap:4px;margin-top:18px;
+  position:relative;
+}
+.tab{
+  flex:1;padding:10px;border-radius:10px;
+  border:none;background:transparent;
+  color:var(--text-faint);
+  font-size:11px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+  transition:all 0.25s;
+  letter-spacing:0.3px;
+}
+.tab:hover{color:var(--text-dim)}
+.tab.active{
+  background:linear-gradient(135deg,var(--gold),var(--gold-2));
+  color:#1a1200;
+  box-shadow:0 4px 12px -4px var(--gold-glow);
+}
+
+/* ====== VIEW ====== */
+.view{
+  background:linear-gradient(180deg,#161920,#12151b);
+  border:1px solid var(--border-soft);
+  border-radius:18px;
+  padding:16px;
+  margin-top:14px;
+  min-height:220px;
+  color:#c8c2b3;
+  font-size:12.5px;line-height:1.75;
+  position:relative;
+}
+.view-title{
+  font-family:'Playfair Display',serif;
+  color:var(--gold);
+  font-weight:800;font-size:15px;
+  margin-bottom:10px;letter-spacing:0.3px;
+  display:flex;align-items:center;gap:8px;
+}
+.view-title::before{
+  content:'';width:4px;height:16px;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-2));
+}
+
+/* ====== EXERCISE BOX ====== */
+.latihan-box{
+  margin-top:16px;
+  background:linear-gradient(160deg,#1a1e26,#151820);
+  border:1px solid var(--border-soft);
+  border-radius:14px;
+  padding:14px;
+  position:relative;overflow:hidden;
+}
+.latihan-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+.latihan-title{
+  color:var(--gold);font-weight:800;font-size:11px;
+  margin-bottom:10px;letter-spacing:0.5px;
+  display:flex;align-items:center;gap:6px;
+}
+.latihan-q{color:var(--text);font-size:12px;margin-bottom:10px;line-height:1.5;font-weight:500}
+.pilihan{
+  display:block;width:100%;text-align:left;
+  padding:9px 12px;margin:5px 0;
+  border-radius:10px;
+  border:1px solid var(--border-soft);
+  background:#181b22;
+  color:#a8a293;
+  cursor:pointer;font-size:11.5px;
+  font-family:inherit;
+  transition:all 0.2s;
+}
+.pilihan:hover{border-color:var(--gold);color:var(--text);background:#1c202a}
+.pilihan.betul{background:rgba(74,222,128,0.12);border-color:var(--emerald);color:var(--emerald)}
+.pilihan.salah{background:rgba(248,113,113,0.1);border-color:var(--rose);color:var(--rose)}
+.penjelasan{
+  margin-top:10px;color:var(--text-faint);
+  font-size:10.5px;line-height:1.5;
+  padding-left:10px;border-left:2px solid var(--border);
+}
+
+/* ====== CHAT ====== */
+.chat-box{
+  max-height:280px;overflow-y:auto;
+  margin-bottom:12px;padding-right:4px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.chat-box::-webkit-scrollbar{width:5px}
+.chat-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+
+.msg{
+  padding:10px 14px;border-radius:14px;
+  margin-bottom:9px;font-size:12px;line-height:1.55;
+  animation:msgIn 0.3s cubic-bezier(.2,.8,.2,1);
+  max-width:88%;
+}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.ai{
+  background:linear-gradient(160deg,#1c202a,#171a21);
+  border:1px solid var(--border-soft);
+  color:#c8c2b3;
+  border-top-left-radius:4px;
+}
+.msg.user{
+  background:linear-gradient(135deg,var(--gold),var(--gold-2));
+  color:#1a1200;
+  margin-left:auto;
+  text-align:right;
+  border-top-right-radius:4px;
+  font-weight:500;
+}
+
 .input-bar{display:flex;gap:8px}
-.input-bar input{flex:1;background:#2a2f39;border:1px solid #3a3f4a;border-radius:12px;padding:10px 14px;color:#e8dcc6;outline:none;font-size:11px}
-.input-bar button{background:#c9a86a;border:none;border-radius:12px;padding:10px 16px;font-weight:800;color:#1a1200;cursor:pointer;font-size:11px}
+.input-bar input{
+  flex:1;
+  background:#181b22;
+  border:1px solid var(--border-soft);
+  border-radius:12px;
+  padding:11px 14px;
+  color:var(--text);
+  outline:none;font-size:12px;
+  font-family:inherit;
+  transition:all 0.2s;
+}
+.input-bar input::placeholder{color:var(--text-faint)}
+.input-bar input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,106,0.08)}
+.input-bar button{
+  background:linear-gradient(135deg,var(--gold),var(--gold-2));
+  border:none;border-radius:12px;
+  padding:11px 18px;
+  font-weight:800;color:#1a1200;
+  cursor:pointer;font-size:11px;
+  font-family:inherit;letter-spacing:0.5px;
+  transition:all 0.2s;
+  box-shadow:0 4px 14px -4px var(--gold-glow);
+}
+.input-bar button:hover{transform:translateY(-1px);box-shadow:0 8px 20px -4px var(--gold-glow)}
+.input-bar button:active{transform:translateY(0)}
+
+/* ====== LOADING ====== */
+.loading{
+  display:flex;align-items:center;gap:10px;
+  color:var(--text-dim);font-size:12px;
+  padding:20px 0;justify-content:center;
+}
+.spinner{
+  width:16px;height:16px;
+  border:2px solid var(--border);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 .hidden{display:none}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="logo-wrap"><img src="logo.png" alt="logo"></div>
-    <div class="header-text"><h1>BELAJAR AI</h1><p>DIPLOMA HALAL • SEM 1-5</p></div>
-    <div class="gold-dot"></div>
+    <div class="logo">
+      <img src="logo.png" alt="logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <span class="fallback" style="display:none">ب</span>
+    </div>
+    <div class="header-text">
+      <h1>Diploma in Halal Management</h1>
+      <p>AI Learning • Sem 1–5</p>
+    </div>
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      <span>ACTIVE</span>
+    </div>
   </div>
 
   <div class="content">
     <div class="profile-row">
       <div class="profile-left">
         <div class="profile-icon">🎓</div>
-        <div><div class="profile-name" id="namaUser">Pelajar Halal</div><div class="profile-sub">Pelajar Aktif</div></div>
+        <div>
+          <div class="profile-name" id="namaUser">Halal Student</div>
+          <div class="profile-sub">Active Semester</div>
+        </div>
       </div>
-      <button class="btn-edit-small" onclick="const n=prompt('Nama:',document.getElementById('namaUser').innerText); if(n) document.getElementById('namaUser').innerText=n">✎</button>
+      <button class="btn-edit-small" onclick="const n=prompt('Name:',document.getElementById('namaUser').innerText); if(n) document.getElementById('namaUser').innerText=n">✎</button>
     </div>
 
-    <div class="label">SEMESTER</div>
+    <div class="label">Semester</div>
     <div class="sem-grid" id="semGrid"></div>
 
-    <div class="label">SUBJEK • KLIK UNTUK BUKA</div>
+    <div class="label">Subjects</div>
     <div class="subjek-grid" id="subjekGrid"></div>
 
     <div class="tabs">
-      <button class="tab active" id="tabBuku" onclick="switchTab('buku')">📖 BUKU</button>
-      <button class="tab" id="tabChat" onclick="switchTab('chat')">💬 TANYA AI</button>
+      <button class="tab active" id="tabBuku" onclick="switchTab('buku')">📖 Textbook</button>
+      <button class="tab" id="tabChat" onclick="switchTab('chat')">💬 Ask AI</button>
     </div>
 
-    <div id="viewBuku" class="view">Pilih subjek untuk mula belajar...</div>
+    <div id="viewBuku" class="view">
+      <div class="loading"><div class="spinner"></div> Loading...</div>
+    </div>
+
     <div id="viewChat" class="view hidden">
-      <div class="chat-box" id="chatBox"><div class="msg ai">Assalamualaikum! Tanya apa saja tentang <b id="chatSubjek">-</b> 👋</div></div>
-      <div class="input-bar"><input id="soalan" placeholder="Taip soalan..." onkeypress="if(event.key==='Enter') tanyaAI()"><button onclick="tanyaAI()">HANTAR</button></div>
+      <div class="chat-box" id="chatBox">
+        <div class="msg ai">Assalamualaikum! 👋<br>Ask me anything about <b id="chatSubjek">-</b></div>
+      </div>
+      <div class="input-bar">
+        <input id="soalan" placeholder="Type your question..." onkeydown="if(event.key==='Enter') tanyaAI()">
+        <button onclick="tanyaAI()">SEND</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-const dataSem={'Sem 1':['CTU101','ISC100','ISC102','ISH101','LCC111','MAT112'],'Sem 2':['CSC134','CTU152','ISC101','ISC152','ISC200','ISH150'],'Sem 3':['CTU263','IMU202','ISC151','ISH202','ISH203','LCC113'],'Sem 4':['ENT300','IMU102','ISC201','ISH250','ISH252','ISH253'],'Sem 5':['ISC251','ISH301','ISH304','ISH305','ISH306']};
-const subjekInfo={'CTU101':'Fundamental Islam','ISC100':'Aqidah','ISC102':'Ulum Quran','ISH101':'Halal Consumerism','LCC111':'English I','MAT112':'Business Math','CSC134':'Computer Info','CTU152':'Values & Civilization','ISC101':'Akhlaq','ISC152':'Ulum Hadith','ISC200':'Tarikh Tasyri','ISH150':'Food Science','CTU263':'Islam & Mgmt','IMU202':'Islamic Economics','ISC151':'Usul Fiqh','ISH202':'Halal Business','ISH203':'Purification','LCC113':'English III','ENT300':'Entrepreneurship','IMU102':'Fiqh Muamalat','ISC201':'Qawaid Fiqhiyah','ISH250':'Fiqh Muasarah','ISH252':'Halal Standard','ISH253':'Halal Logistics','ISC251':'Dirasah Nassiyah','ISH301':'Slaughtering','ISH304':'Regulatory','ISH305':'Quality Assurance','ISH306':'Industrial Training'};
+const dataSem={
+  'Sem 1':['CTU101','ISC100','ISC102','ISH101','LCC111','MAT112'],
+  'Sem 2':['CSC134','CTU152','ISC101','ISC152','ISC200','ISH150'],
+  'Sem 3':['CTU263','IMU202','ISC151','ISH202','ISH203','LCC113'],
+  'Sem 4':['ENT300','IMU102','ISC201','ISH250','ISH252','ISH253'],
+  'Sem 5':['ISC251','ISH301','ISH304','ISH305','ISH306']
+};
+const subjekInfo={
+  'CTU101':'Fundamentals of Islam','ISC100':'Aqidah','ISC102':'Ulum Al-Quran',
+  'ISH101':'Halal Consumerism','LCC111':'English I','MAT112':'Business Mathematics',
+  'CSC134':'Computer Information','CTU152':'Values & Civilization','ISC101':'Akhlaq',
+  'ISC152':'Ulum Al-Hadith','ISC200':'History of Tasyri','ISH150':'Food Science',
+  'CTU263':'Islam & Management','IMU202':'Islamic Economics','ISC151':'Usul Fiqh',
+  'ISH202':'Halal Business','ISH203':'Purification','LCC113':'English III',
+  'ENT300':'Entrepreneurship','IMU102':'Fiqh Muamalat','ISC201':'Qawaid Fiqhiyah',
+  'ISH250':'Contemporary Fiqh','ISH252':'Halal Standards','ISH253':'Halal Logistics',
+  'ISC251':'Dirasah Nassiyah','ISH301':'Slaughtering','ISH304':'Regulatory',
+  'ISH305':'Quality Assurance','ISH306':'Industrial Training'
+};
+
 let semAktif='Sem 3', subjekAktif='ISH202', tab='buku';
-function renderSem(){const g=document.getElementById('semGrid');g.innerHTML='';Object.keys(dataSem).forEach(s=>{const b=document.createElement('button');b.className='sem-btn'+(s===semAktif?' active':'');b.innerText=s;b.onclick=()=>{semAktif=s;subjekAktif=dataSem[s][0];renderSem();renderSubjek();bukaBuku()};g.appendChild(b)})}
-function renderSubjek(){const g=document.getElementById('subjekGrid');g.innerHTML='';const cols=['biru','amber','emerald','rose'];dataSem[semAktif].forEach((kod,i)=>{const d=document.createElement('div');d.className=`subjek-card ${cols[i%4]}${kod===subjekAktif?' active':''}`;d.innerHTML=`<div class="subjek-top"><span class="subjek-code">${kod}</span><span class="subjek-dot"></span></div><div class="subjek-name">${subjekInfo[kod]||''}</div>`;d.onclick=()=>{subjekAktif=kod;renderSubjek();bukaBuku();document.getElementById('chatSubjek').innerText=kod};g.appendChild(d)})}
-function switchTab(t){tab=t;document.getElementById('viewBuku').classList.toggle('hidden',t!=='buku');document.getElementById('viewChat').classList.toggle('hidden',t!=='chat');document.getElementById('tabBuku').classList.toggle('active',t==='buku');document.getElementById('tabChat').classList.toggle('active',t==='chat');if(t==='chat')document.getElementById('chatSubjek').innerText=subjekAktif}
-async function bukaBuku(){switchTab('buku');const v=document.getElementById('viewBuku');v.innerHTML=`⏳ Menjana buku teks <b>${subjekAktif}</b>...`;try{const r=await fetch('/api/buku-teks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subjek:subjekAktif,tahap:semAktif})});const j=await r.json();if(j.status==='success'){const d=j.data;v.innerHTML=`<div style="color:#c9a86a;font-weight:800;font-size:13px;margin-bottom:8px">${d.tajuk}</div><div style="white-space:pre-line">${d.kandungan}</div><div style="margin-top:14px;background:#2a2f39;border:1px solid #3a3f4a;border-radius:12px;padding:12px"><div style="color:#c9a86a;font-weight:700;font-size:11px;margin-bottom:8px">✦ LATIHAN: ${d.latihan.soalan}</div>${d.latihan.pilihan.map((p,i)=>`<button onclick="if(${i}===${d.latihan.jawapan_betul}){this.style.background='#c9a86a';this.style.color='#1a1200'}else{this.style.background='#3a1f1f';this.style.color='#fb7185'}" style="display:block;width:100%;text-align:left;padding:8px 10px;margin:4px 0;border-radius:9px;border:1px solid #3a3f4a;background:#23272f;color:#a1a6b0;cursor:pointer;font-size:11px">${p}</button>`).join('')}<div style="margin-top:8px;color:#6b707a;font-size:10px">${d.latihan.penjelasan}</div></div>`}else v.innerHTML='❌ '+j.message}catch(e){v.innerHTML='❌ Ralat: '+e.message}}
-async function tanyaAI(){const inp=document.getElementById('soalan');const q=inp.value.trim();if(!q)return;const box=document.getElementById('chatBox');box.innerHTML+=`<div class="msg user">${q}</div>`;inp.value='';box.innerHTML+=`<div class="msg ai" id="ld">⏳...</div>`;box.scrollTop=box.scrollHeight;try{const r=await fetch('/api/tanya',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({soalan:q,subjek:subjekAktif,tahap:semAktif})});const j=await r.json();document.getElementById('ld')?.remove();box.innerHTML+=`<div class="msg ai">${(j.jawapan||'').replace(/\n/g,'<br>')}</div>`;box.scrollTop=box.scrollHeight}catch(e){document.getElementById('ld')?.remove();box.innerHTML+=`<div class="msg ai">❌ Ralat</div>`}}
-renderSem();renderSubjek();bukaBuku();
+let requestId = 0;
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function renderSem(){
+  const g=document.getElementById('semGrid');g.innerHTML='';
+  Object.keys(dataSem).forEach(s=>{
+    const b=document.createElement('button');
+    b.className='sem-btn'+(s===semAktif?' active':'');
+    b.innerText=s.replace('Sem ','S');
+    b.title=s;
+    b.onclick=()=>{semAktif=s;subjekAktif=dataSem[s][0];renderSem();renderSubjek();bukaBuku();};
+    g.appendChild(b);
+  });
+}
+
+function renderSubjek(){
+  const g=document.getElementById('subjekGrid');g.innerHTML='';
+  const cols=['gold','emerald','rose','sand'];
+  dataSem[semAktif].forEach((kod,i)=>{
+    const d=document.createElement('div');
+    d.className='subjek-card '+cols[i%4]+(kod===subjekAktif?' active':'');
+    d.innerHTML=`
+      <div class="subjek-top">
+        <span class="subjek-code">${kod}</span>
+        <span class="subjek-dot"></span>
+      </div>
+      <div class="subjek-name">${esc(subjekInfo[kod]||'')}</div>`;
+    d.onclick=()=>{
+      subjekAktif=kod;
+      renderSubjek();
+      bukaBuku();
+      document.getElementById('chatSubjek').innerText=kod;
+    };
+    g.appendChild(d);
+  });
+}
+
+function switchTab(t){
+  tab=t;
+  document.getElementById('viewBuku').classList.toggle('hidden',t!=='buku');
+  document.getElementById('viewChat').classList.toggle('hidden',t!=='chat');
+  document.getElementById('tabBuku').classList.toggle('active',t==='buku');
+  document.getElementById('tabChat').classList.toggle('active',t==='chat');
+  if(t==='chat') document.getElementById('chatSubjek').innerText=subjekAktif;
+}
+
+async function bukaBuku(){
+  switchTab('buku');
+  const v=document.getElementById('viewBuku');
+  const myId = ++requestId;
+  v.innerHTML=`<div class="loading"><div class="spinner"></div> Generating textbook for <b style="color:var(--gold);margin-left:4px">${subjekAktif}</b>...</div>`;
+
+  try{
+    const r=await fetch('/api/buku-teks',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({subjek:subjekAktif,tahap:semAktif})
+    });
+    const j=await r.json();
+    if(myId !== requestId) return;
+
+    if(j.status==='success'){
+      const d=j.data;
+      const lat=d.latihan||{};
+      const pilihan=(lat.pilihan||[]).map((p,i)=>
+        `<button class="pilihan" onclick="checkJawapan(this,${i},${lat.jawapan_betul})">${esc(p)}</button>`
+      ).join('');
+
+      v.innerHTML=`
+        <div class="view-title">${esc(d.tajuk||subjekAktif)}</div>
+        <div style="white-space:pre-line">${esc(d.kandungan||'')}</div>
+        <div class="latihan-box">
+          <div class="latihan-title">✦ EXERCISE</div>
+          <div class="latihan-q">${esc(lat.soalan||'')}</div>
+          ${pilihan}
+          <div class="penjelasan">${esc(lat.penjelasan||'')}</div>
+        </div>`;
+    } else {
+      v.innerHTML=`<div style="color:var(--rose)">❌ ${esc(j.message||'Error')}</div>`;
+    }
+  }catch(e){
+    if(myId !== requestId) return;
+    v.innerHTML=`<div style="color:var(--rose)">❌ Error: ${esc(e.message)}</div>`;
+  }
+}
+
+window.checkJawapan = function(btn, dipilih, betul){
+  const semua = btn.parentElement.querySelectorAll('.pilihan');
+  semua.forEach(b => b.disabled = true);
+  if(dipilih === betul){
+    btn.classList.add('betul');
+    btn.innerHTML = '✓ ' + btn.innerHTML;
+  } else {
+    btn.classList.add('salah');
+    btn.innerHTML = '✗ ' + btn.innerHTML;
+    if(semua[betul]) semua[betul].classList.add('betul');
+  }
+};
+
+async function tanyaAI(){
+  const inp=document.getElementById('soalan');
+  const q=inp.value.trim();
+  if(!q) return;
+  const box=document.getElementById('chatBox');
+
+  box.insertAdjacentHTML('beforeend', `<div class="msg user">${esc(q)}</div>`);
+  inp.value='';
+  const ldId = 'ld-'+Date.now();
+  box.insertAdjacentHTML('beforeend', `<div class="msg ai" id="${ldId}">⏳ Thinking...</div>`);
+  box.scrollTop=box.scrollHeight;
+
+  try{
+    const r=await fetch('/api/tanya',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({soalan:q,subjek:subjekAktif,tahap:semAktif})
+    });
+    const j=await r.json();
+    document.getElementById(ldId)?.remove();
+    const jawapan = (j.jawapan||'').replace(/\n/g,'<br>');
+    box.insertAdjacentHTML('beforeend', `<div class="msg ai">${esc(jawapan).replace(/&lt;br&gt;/g,'<br>')}</div>`);
+    box.scrollTop=box.scrollHeight;
+  }catch(e){
+    document.getElementById(ldId)?.remove();
+    box.insertAdjacentHTML('beforeend', `<div class="msg ai" style="color:var(--rose)">❌ Connection error</div>`);
+  }
+}
+
+renderSem();
+renderSubjek();
+bukaBuku();
 </script>
 </body>
 </html>

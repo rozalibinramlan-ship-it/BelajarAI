@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -9,89 +10,191 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ===== MIDDLEWARE =====
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
 
+// ===== CONFIG =====
 const GROQ_KEY = process.env.GROQ_API_KEY;
 const MODEL = "llama-3.1-8b-instant";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-async function callGroq(prompt){
-  if(!GROQ_KEY) throw new Error("GROQ_API_KEY tiada di env - set di Railway Variables");
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "Authorization":`Bearer ${GROQ_KEY}`
+// ===== SYSTEM PROMPT =====
+const SYSTEM_PROMPT = `You are an experienced lecturer for the Diploma in Halal Management at UiTM (Universiti Teknologi MARA), Malaysia.
+- Answer in clear, simple English.
+- Keep responses concise and practical.
+- Relate examples to the Malaysian halal industry when relevant.
+- Use proper academic tone but stay friendly and easy to understand.`;
+
+// ===== GROQ API CALL =====
+async function callGroq(userPrompt, options = {}) {
+  if (!GROQ_KEY) {
+    throw new Error("GROQ_API_KEY is missing. Set it in your .env or Railway Variables.");
+  }
+
+  const {
+    temperature = 0.7,
+    max_tokens = 2200,
+    jsonMode = false
+  } = options;
+
+  const body = {
+    model: MODEL,
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userPrompt }
+    ],
+    temperature,
+    max_tokens
+  };
+
+  // Groq supports JSON mode via response_format
+  if (jsonMode) {
+    body.response_format = { type: "json_object" };
+  }
+
+  const res = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${GROQ_KEY}`
     },
-    body:JSON.stringify({
-      model:MODEL,
-      messages:[
-        {role:"system", content:"Kau adalah pensyarah Diploma Pengurusan Halal UiTM. Jawab padat, bahasa Melayu mudah faham."},
-        {role:"user", content:prompt}
-      ],
-      temperature:0.7,
-      max_tokens:2200
-    })
+    body: JSON.stringify(body)
   });
+
   const data = await res.json();
-  if(!res.ok) throw new Error(data.error?.message || JSON.stringify(data).slice(0,300));
-  return data.choices?.[0]?.message?.content || "";
+
+  if (!res.ok) {
+    const msg = data?.error?.message || JSON.stringify(data).slice(0, 300);
+    throw new Error(`Groq API error: ${msg}`);
+  }
+
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content) {
+    throw new Error("Groq returned an empty response.");
+  }
+
+  return content;
 }
 
-// Health untuk Railway
-app.get("/health",(req,res)=>res.status(200).send("OK"));
-app.get("/api/health",(req,res)=>res.json({status:"ok", groq:!!GROQ_KEY, model:MODEL}));
+// ===== HEALTH CHECKS =====
+app.get("/health", (req, res) => res.status(200).send("OK"));
 
-app.get("/",(req,res)=>res.sendFile(path.join(__dirname,"index.html")));
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    groq_configured: !!GROQ_KEY,
+    model: MODEL,
+    timestamp: new Date().toISOString()
+  });
+});
 
-app.post("/api/buku-teks", async (req,res)=>{
-  try{
-    const {subjek,tahap} = req.body;
-    if(!subjek) return res.status(400).json({status:"error",message:"subjek tiada"});
-    
+// ===== ROOT =====
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ===== TEXTBOOK GENERATOR =====
+app.post("/api/buku-teks", async (req, res) => {
+  try {
+    const { subjek, tahap } = req.body;
+
+    if (!subjek) {
+      return res.status(400).json({
+        status: "error",
+        message: "Field 'subjek' is required."
+      });
+    }
+
     const prompt = `
-Buat buku teks ringkas subjek ${subjek} tahap ${tahap} Diploma Pengurusan Halal.
-Balas JSON SAHAJA tanpa markdown code block, format mesti valid JSON:
+Create a short textbook chapter for the subject "${subjek}" at level "${tahap || "Diploma"}" 
+for the Diploma in Halal Management program at UiTM Malaysia.
+
+Return ONLY a valid JSON object with this exact structure (no markdown, no code blocks):
+
 {
-  "tajuk": "Tajuk bab menarik",
-  "kandungan": "3-4 perenggan penjelasan padat, bahasa Melayu, bagi contoh industri halal Malaysia. Gunakan perenggan baru.",
+  "tajuk": "An engaging chapter title",
+  "kandungan": "3-4 concise paragraphs in English explaining the topic. Include real examples from the Malaysian halal industry. Separate paragraphs with \\n\\n.",
   "latihan": {
-    "soalan": "Soalan objektif berkaitan topik",
-    "pilihan": ["A. pilihan 1","B. pilihan 2","C. pilihan 3","D. pilihan 4"],
+    "soalan": "A multiple-choice question related to the topic",
+    "pilihan": ["A. first option", "B. second option", "C. third option", "D. fourth option"],
     "jawapan_betul": 0,
-    "penjelasan": "Kenapa jawapan betul"
+    "penjelasan": "Explanation of why the correct answer is right"
   }
 }
+
+Requirements:
+- Language: English only
+- Tone: academic but accessible
+- Content: practical and relevant to halal industry
+- jawapan_betul must be an index (0-3) matching the correct option
 `.trim();
 
-    let text = await callGroq(prompt);
-    text = text.replace(/```json|```/g,"").trim();
-    const start = text.indexOf("{");
-    const end = text.lastIndexOf("}");
-    const jsonStr = text.slice(start, end+1);
-    const parsed = JSON.parse(jsonStr);
-    res.json({status:"success", data:parsed});
-  }catch(e){
-    console.error("buku-teks:",e.message);
-    res.status(500).json({status:"error", message:e.message});
+    const raw = await callGroq(prompt, { jsonMode: true, temperature: 0.7 });
+
+    // Robust JSON extraction
+    const cleaned = raw.replace(/```json|```/g, "").trim();
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+
+    if (start === -1 || end === -1) {
+      throw new Error("AI did not return valid JSON.");
+    }
+
+    const parsed = JSON.parse(cleaned.slice(start, end + 1));
+
+    // Validate structure
+    if (!parsed.tajuk || !parsed.kandungan || !parsed.latihan) {
+      throw new Error("AI response is missing required fields.");
+    }
+
+    res.json({ status: "success", data: parsed });
+  } catch (e) {
+    console.error("[buku-teks]", e.message);
+    res.status(500).json({
+      status: "error",
+      message: e.message
+    });
   }
 });
 
-app.post("/api/tanya", async (req,res)=>{
-  try{
-    const {soalan,subjek,tahap} = req.body;
-    if(!soalan) return res.json({jawapan:"Sila taip soalan"});
-    const prompt = `Subjek ${subjek} ${tahap}. Soalan pelajar: ${soalan}. Jawab ringkas max 150 perkataan, bahasa Melayu santai, kaitkan dengan halal industri jika relevan.`;
-    const jawapan = await callGroq(prompt);
-    res.json({jawapan});
-  }catch(e){
-    console.error("tanya:",e.message);
-    res.status(500).json({jawapan:"Maaf ralat: "+e.message});
+// ===== CHAT / Q&A =====
+app.post("/api/tanya", async (req, res) => {
+  try {
+    const { soalan, subjek, tahap } = req.body;
+
+    if (!soalan || !soalan.trim()) {
+      return res.json({ jawapan: "Please type your question." });
+    }
+
+    const context = subjek ? `Subject: ${subjek} (${tahap || "Diploma"}).` : "";
+    const prompt = `${context}
+Student's question: "${soalan}"
+
+Answer in simple English, maximum 150 words. Be clear and helpful. If relevant, relate your answer to the halal industry in Malaysia.`.trim();
+
+    const jawapan = await callGroq(prompt, { temperature: 0.7, max_tokens: 500 });
+
+    res.json({ jawapan });
+  } catch (e) {
+    console.error("[tanya]", e.message);
+    res.status(500).json({
+      jawapan: `Sorry, an error occurred: ${e.message}`
+    });
   }
 });
 
-app.listen(PORT,"0.0.0.0",()=>{
-  console.log(`✅ Grey Gold App jalan di ${PORT}`);
-  console.log(`✅ GROQ_KEY: ${GROQ_KEY ? "ADA" : "TIADA"}`);
+// ===== 404 FALLBACK =====
+app.use((req, res) => {
+  res.status(404).json({ status: "error", message: "Endpoint not found." });
+});
+
+// ===== START SERVER =====
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("════════════════════════════════════════════");
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Groq API Key: ${GROQ_KEY ? "CONFIGURED" : "MISSING ⚠️"}`);
+  console.log(`✅ Model: ${MODEL}`);
+  console.log("════════════════════════════════════════════");
 });
