@@ -1,8 +1,8 @@
 {
-  "name": "belajar-ai-halal-premium",
-  "version": "1.0.0",
+  "name": "belajar-ai-halal-grey-gold",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Belajar AI Diploma Halal Premium VIP Gold",
+  "description": "Belajar AI Halal - Grey Gold Original Design + GROQ",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
